@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Access</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#0f0e0c;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{background:#1a1917;border:1px solid #2a2925;border-radius:14px;padding:32px;width:100%;max-width:360px}
+.label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#4a4845;margin-bottom:20px;text-align:center}
+.title{font-size:20px;font-weight:600;color:#fff;text-align:center;margin-bottom:28px}
+label{font-size:12px;color:#6b6860;font-weight:500;display:block;margin-bottom:6px}
+input{width:100%;padding:10px 14px;background:#0f0e0c;border:1px solid #2a2925;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;color:#fff;margin-bottom:16px;transition:border-color .15s}
+input:focus{outline:none;border-color:#4a4845}
+.btn{width:100%;padding:12px;background:#fff;color:#0f0e0c;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:opacity .15s;letter-spacing:.3px}
+.btn:hover{opacity:.85}.btn:disabled{opacity:.4;cursor:not-allowed}
+.err{margin-top:12px;padding:10px;background:rgba(139,32,32,.5);border-radius:8px;font-size:13px;color:#f5a3a3;text-align:center;display:none}
+.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(0,0,0,.2);border-top-color:#0f0e0c;border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle}
+@keyframes sp{to{transform:rotate(360deg)}}
+.back{display:block;text-align:center;margin-top:16px;font-size:12px;color:#4a4845;text-decoration:none;cursor:pointer}
+.back:hover{color:#6b6860}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="label">Restricted Access</div>
+  <div class="title">MedTrack Pro</div>
+  <label>Password</label>
+  <input type="password" id="pw" placeholder="Enter system password" onkeydown="if(event.key==='Enter')login()">
+  <button class="btn" id="btn" onclick="login()"><span id="btn-txt">Access system</span></button>
+  <div class="err" id="err"></div>
+  <a class="back" onclick="window.location.href='index.html'">← Back to main login</a>
+</div>
+<script>
+const SB_URL='https://ugomcdfwzbrqtgbuhokh.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnb21jZGZ3emJycXRnYnVob2toIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNjEyMTQsImV4cCI6MjA5MjczNzIxNH0.d1RU2TE6EbykiTkJmKD2EdUu5AFx0Y_0Rwvw68yA-bY';
+const STORED_PW_KEY='mt_super_pw';
+
+function login(){
+  const pw=document.getElementById('pw').value;
+  const btn=document.getElementById('btn');
+  const err=document.getElementById('err');
+  err.style.display='none';
+  if(!pw){err.textContent='Enter the system password';err.style.display='block';return;}
+  const stored=localStorage.getItem(STORED_PW_KEY)||'MedTrack2024!';
+  btn.disabled=true;
+  document.getElementById('btn-txt').innerHTML='<span class="spin"></span>';
+  setTimeout(()=>{
+    if(pw===stored){
+      // Store session flag and redirect to main app in super admin mode
+      localStorage.setItem('mt_super_session','1');
+      window.location.href='index.html?mode=super';
+    } else {
+      err.textContent='Incorrect password';
+      err.style.display='block';
+      btn.disabled=false;
+      document.getElementById('btn-txt').textContent='Access system';
+    }
+  },600);
+}
+</script>
+</body>
+</html>
