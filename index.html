@@ -335,6 +335,25 @@ tr:hover td{background:var(--surf2)}
   </div>
 </div>
 
+<!-- ══════════ COMPANY DETAIL (Super Admin) ══════════ -->
+<div id="vw-co-detail" class="view">
+  <div class="page">
+    <div class="ph">
+      <div style="display:flex;align-items:center;gap:14px">
+        <button class="btn btn-out btn-sm" onclick="showView('super');initSuper()">&#8592; Back</button>
+        <div>
+          <div class="pt" id="cod-title"></div>
+          <div class="ps" id="cod-sub"></div>
+        </div>
+      </div>
+      <button class="btn btn-out btn-sm" onclick="exportCompanyData()">📥 Export company data</button>
+    </div>
+    <div class="mg" id="cod-metrics"></div>
+    <div style="font-size:15px;font-weight:500;margin-bottom:12px">Homes & contact details</div>
+    <div class="card" style="padding:0;overflow:hidden"><div class="tw" id="cod-homes-tbl"></div></div>
+  </div>
+</div>
+
 <!-- ══════════ COMPANY ADMIN ══════════ -->
 <div id="vw-company" class="view">
   <div class="page">
@@ -974,7 +993,7 @@ async function initSuper(){
 
   const rows=cos.map(co=>`<tr>
     <td>
-      <strong>${co.name}</strong><br>
+      <strong style="cursor:pointer;color:var(--purple);text-decoration:underline" onclick="viewCompanyDetail('${co.id}')">${co.name}</strong><br>
       <span style="font-size:11px;color:var(--txt3)">${co.email}</span>
     </td>
     <td>${co.phone||'—'}</td>
@@ -1057,6 +1076,82 @@ async function toggleCompany(id,isActive,name){
 // ════════════════════════════════════════════════
 // COMPANY ADMIN
 // ════════════════════════════════════════════════
+
+// ── SUPER ADMIN COMPANY DETAIL ──
+let viewingCompanyId=null;
+
+async function viewCompanyDetail(id){
+  viewingCompanyId=id;
+  const {data:co}=await sb.from('companies').select('*').eq('id',id).single();
+  if(!co)return;
+
+  document.getElementById('cod-title').textContent=co.name;
+  document.getElementById('cod-sub').textContent=co.email+(co.phone?' · '+co.phone:'')+(co.address?' · '+co.address:'');
+
+  // Fetch homes with their managers
+  const {data:homes}=await sb.from('homes').select('*').eq('company_id',id).order('name');
+  const {data:managers}=await sb.from('managers').select('*').eq('company_id',id);
+  const {data:residents}=await sb.from('residents').select('id').eq('company_id',id).eq('is_active',true);
+  const {data:staff}=await sb.from('employees').select('id').eq('company_id',id).eq('is_active',true);
+
+  document.getElementById('cod-metrics').innerHTML=`
+    <div class="met"><div class="ml">Homes</div><div class="mv">${(homes||[]).length}</div><div class="ms">registered</div></div>
+    <div class="met"><div class="ml">Managers</div><div class="mv">${(managers||[]).length}</div><div class="ms">assigned</div></div>
+    <div class="met"><div class="ml">Residents</div><div class="mv">${(residents||[]).length}</div><div class="ms">active</div></div>
+    <div class="met"><div class="ml">Staff</div><div class="mv">${(staff||[]).length}</div><div class="ms">active</div></div>`;
+
+  if(!homes||!homes.length){
+    document.getElementById('cod-homes-tbl').innerHTML='<div class="empty">No homes added yet.</div>';
+    showView('co-detail');return;
+  }
+
+  // Build home rows with manager info
+  const mgrMap={};
+  (managers||[]).forEach(m=>{mgrMap[m.home_id]=m;});
+
+  const rows=(homes||[]).map(h=>{
+    const mgr=mgrMap[h.id];
+    return `<tr>
+      <td><strong>${h.name}</strong>${h.address?'<br><span style="font-size:11px;color:var(--txt3)">'+h.address+'</span>':''}</td>
+      <td>${h.email||'—'}</td>
+      <td>${h.phone||'—'}</td>
+      <td>${mgr?mgr.first_name+' '+mgr.last_name:'<span class="badge b-amber">No manager</span>'}</td>
+      <td>${mgr?mgr.email:'—'}</td>
+      <td>${mgr?mgr.notification_email||mgr.email:'—'}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('cod-homes-tbl').innerHTML=`<table>
+    <thead><tr>
+      <th>Home name</th><th>Home email</th><th>Home phone</th>
+      <th>Manager</th><th>Manager email</th><th>Alert email</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+
+  showView('co-detail');
+}
+
+async function exportCompanyData(){
+  const {data:co}=await sb.from('companies').select('*').eq('id',viewingCompanyId).single();
+  const {data:homes}=await sb.from('homes').select('*').eq('company_id',viewingCompanyId).order('name');
+  const {data:managers}=await sb.from('managers').select('*').eq('company_id',viewingCompanyId);
+  const mgrMap={};(managers||[]).forEach(m=>{mgrMap[m.home_id]=m;});
+
+  let csv='Company,Home Name,Home Address,Home Email,Home Phone,Manager Name,Manager Email,Alert Email\n';
+  (homes||[]).forEach(h=>{
+    const mgr=mgrMap[h.id];
+    csv+=`"${co.name}","${h.name}","${h.address||''}","${h.email||''}","${h.phone||''}",`
+      +`"${mgr?mgr.first_name+' '+mgr.last_name:''}","${mgr?mgr.email:''}","${mgr?mgr.notification_email||mgr.email:''}"
+`;
+  });
+
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download=co.name.replace(/[\s]+/g,'-').toLowerCase()+'-data.csv';
+  a.click();
+  toast('Company data exported','ok');
+}
 async function initCompany(){
   const co=me.company;
   document.getElementById('co-title').textContent=co.name;
