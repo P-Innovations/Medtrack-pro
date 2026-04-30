@@ -1,0 +1,2315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>MedTrack Pro v2.0</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+
+// ── VIEW EMPLOYEE CREDENTIALS ──
+function showPin(id){
+  const e=emps.find(x=>x.id===id);if(!e)return;
+  document.getElementById('pin-mname').textContent=e.first_name+' '+e.last_name;
+  document.getElementById('pin-mval').textContent='User ID: '+e.user_id;
+  openModal('mo-pin');
+}
+
+</script>
+<style>
+:root{
+  --bg:#f5f4f0;--surf:#fff;--surf2:#f0efe9;--bdr:#e2e0d8;
+  --txt:#1a1917;--txt2:#6b6860;--txt3:#9e9b93;
+  --green:#1d6b44;--gbg:#e8f5ee;--gbd:#a3d4b8;
+  --amber:#7a4f0d;--abg:#fef3e2;--abd:#f5c96e;
+  --red:#8b2020;--rbg:#fdeaea;--rbd:#f5a3a3;
+  --blue:#0e4d8a;--bbg:#e8f0fb;--bbd:#9dbde8;
+  --purple:#4a1d8a;--pbg:#f0ebfd;--pbd:#c4aaf5;
+  --teal:#085041;--tbg:#e1f5ee;--tbd:#5dcaa5;
+  --r:10px;--rl:14px;--mono:'DM Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;font-size:15px;line-height:1.5}
+.view{display:none}
+/* TOPBAR */
+.topbar{background:var(--surf);border-bottom:1px solid var(--bdr);padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.logo{font-size:17px;font-weight:600;letter-spacing:-.3px;display:flex;align-items:center;gap:8px}
+.logo-dot{width:8px;height:8px;background:var(--purple);border-radius:50%}
+.logo-sub{font-size:11px;color:var(--txt3);font-weight:400;margin-left:2px}
+.pill{display:flex;align-items:center;gap:8px;padding:5px 12px;background:var(--surf2);border:1px solid var(--bdr);border-radius:999px;font-size:13px}
+.av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff;flex-shrink:0}
+.av-purple{background:#4a1d8a}.av-teal{background:#085041}.av-blue{background:#0e4d8a}.av-amber{background:#7a4f0d}.av-green{background:#1d6b44}
+/* BUTTONS */
+button{font-family:'DM Sans',sans-serif;cursor:pointer;border:none;font-size:14px}
+.btn{padding:8px 16px;border-radius:var(--r);font-weight:500;transition:opacity .15s;border:1px solid transparent}
+.btn:hover{opacity:.82}.btn:active{opacity:.65}.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-dark{background:var(--txt);color:#fff}
+.btn-out{background:var(--surf);border-color:var(--bdr);color:var(--txt)}.btn-out:hover{background:var(--surf2)}
+.btn-green{background:var(--gbg);color:var(--green);border-color:var(--gbd)}
+.btn-red{background:var(--rbg);color:var(--red);border-color:var(--rbd)}
+.btn-amber{background:var(--abg);color:var(--amber);border-color:var(--abd)}
+.btn-blue{background:var(--bbg);color:var(--blue);border-color:var(--bbd)}
+.btn-purple{background:var(--pbg);color:var(--purple);border-color:var(--pbd)}
+.btn-sm{padding:5px 12px;font-size:13px}
+.btn-xs{padding:3px 8px;font-size:11px}
+.btn-full{width:100%;text-align:center;padding:11px}
+.btn-icon{width:34px;height:34px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:var(--r);background:var(--surf2);border:1px solid var(--bdr);color:var(--txt2);font-size:16px}
+/* FORMS */
+.fg{margin-bottom:14px}
+.fl{font-size:12px;font-weight:500;color:var(--txt2);margin-bottom:5px;display:block}
+.fh{font-size:11px;color:var(--txt3);margin-top:4px}
+input,select,textarea{width:100%;padding:9px 12px;border:1px solid var(--bdr);border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--txt);background:var(--surf);transition:border-color .15s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--txt)}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+/* CARD */
+.card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rl);padding:20px}
+.card-sm{padding:14px 16px}
+/* BADGE */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:500;border:1px solid transparent}
+.b-green{background:var(--gbg);color:var(--green);border-color:var(--gbd)}
+.b-red{background:var(--rbg);color:var(--red);border-color:var(--rbd)}
+.b-amber{background:var(--abg);color:var(--amber);border-color:var(--abd)}
+.b-blue{background:var(--bbg);color:var(--blue);border-color:var(--bbd)}
+.b-purple{background:var(--pbg);color:var(--purple);border-color:var(--pbd)}
+.b-teal{background:var(--tbg);color:var(--teal);border-color:var(--tbd)}
+.b-gray{background:var(--surf2);color:var(--txt2);border-color:var(--bdr)}
+/* MODAL */
+.mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto}
+.mo.open{display:flex}
+.md{background:var(--surf);border-radius:var(--rl);padding:24px;width:100%;max-width:520px;margin:auto}
+.mt{font-size:17px;font-weight:600;margin-bottom:18px}
+.mf{display:flex;gap:8px;justify-content:flex-end;margin-top:18px}
+/* TABLE */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:8px 12px;font-size:11px;font-weight:600;color:var(--txt3);border-bottom:1px solid var(--bdr);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+td{padding:10px 12px;border-bottom:1px solid var(--bdr);color:var(--txt);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surf2)}
+/* PAGE */
+.page{max-width:1000px;margin:0 auto;padding:24px 20px}
+.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.pt{font-size:22px;font-weight:600;letter-spacing:-.3px}
+.ps{font-size:13px;color:var(--txt3);margin-top:2px}
+/* TABS */
+.tabs{display:flex;gap:2px;background:var(--surf2);border-radius:var(--r);padding:3px;margin-bottom:20px;flex-wrap:wrap}
+.tb{padding:7px 16px;border-radius:8px;font-size:13px;font-weight:500;color:var(--txt2);background:none;border:none;cursor:pointer;transition:all .15s;white-space:nowrap}
+.tb.active{background:var(--surf);color:var(--txt);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+/* METRICS */
+.mg{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:20px}
+.met{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:14px 16px}
+.ml{font-size:12px;color:var(--txt3);margin-bottom:4px}
+.mv{font-size:24px;font-weight:600;line-height:1;font-family:var(--mono)}
+.ms{font-size:11px;color:var(--txt3);margin-top:3px}
+/* LOGIN - PUBLIC */
+#vw-login{min-height:100vh;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#1a1260 0%,#0f6e56 100%)}
+.lcard{width:100%;max-width:380px}
+.login-glass{background:rgba(255,255,255,0.18);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid rgba(255,255,255,0.32);border-radius:20px;padding:36px 32px;box-shadow:0 8px 40px rgba(0,0,0,0.25)}
+.login-logo-wrap{text-align:center;margin-bottom:28px}
+.login-pill-icon{width:60px;height:60px;border-radius:16px;background:rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 14px}
+.login-app-name{font-size:22px;font-weight:700;color:#fff;letter-spacing:-.3px}
+.login-app-sub{font-size:12px;color:rgba(255,255,255,0.7);margin-top:3px}
+.login-input-wrap{position:relative;margin-bottom:14px}
+.login-input-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;opacity:.6;pointer-events:none}
+.login-input{width:100%;padding:11px 14px 11px 40px;border-radius:10px;border:1px solid rgba(255,255,255,0.35);background:rgba(255,255,255,0.85);font-family:'DM Sans',sans-serif;font-size:14px;color:#1a1917;transition:all .2s}
+.login-input:focus{outline:none;background:#fff;border-color:rgba(255,255,255,0.9);box-shadow:0 0 0 3px rgba(255,255,255,0.2)}
+.login-btn{width:100%;padding:12px;border-radius:10px;background:#1a1917;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;letter-spacing:.3px;border:none;cursor:pointer;margin-top:4px;transition:opacity .15s}
+.login-btn:hover{opacity:.85}.login-btn:disabled{opacity:.5;cursor:not-allowed}
+.login-err{margin-top:12px;padding:10px 14px;background:rgba(139,32,32,0.85);border-radius:8px;font-size:13px;color:#fff;text-align:center;display:none}
+/* SUPER ADMIN LOGIN - separate hidden view */
+#vw-super-login{min-height:100vh;align-items:center;justify-content:center;background:#1a1917;padding:20px}
+.super-lcard{width:100%;max-width:360px}
+/* RESIDENT CARDS */
+.res-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+.res-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rl);padding:16px;cursor:pointer;transition:all .15s;text-align:center}
+.res-card:hover{border-color:var(--purple);box-shadow:0 2px 12px rgba(74,29,138,.1)}
+.res-photo{width:64px;height:64px;border-radius:50%;object-fit:cover;margin:0 auto 10px;display:block;border:2px solid var(--bdr)}
+.res-initials{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:600;color:#fff;margin:0 auto 10px}
+.res-name{font-size:14px;font-weight:500;margin-bottom:4px}
+.res-room{font-size:12px;color:var(--txt3)}
+/* MED TIME SECTIONS */
+.time-section{margin-bottom:20px}
+.time-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bdr)}
+.time-icon{width:32px;height:32px;border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:16px}
+.time-title{font-size:15px;font-weight:500}
+.med-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rl);padding:16px;margin-bottom:10px}
+.med-card.administered{border-left:3px solid var(--green)}
+.med-card.refused{border-left:3px solid var(--red)}
+.med-card.missed{border-left:3px solid var(--amber)}
+.med-name{font-size:15px;font-weight:600;margin-bottom:4px}
+.med-dose{font-size:13px;color:var(--txt2);margin-bottom:8px}
+.med-meta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.med-meta-item{font-size:12px;color:var(--txt3);display:flex;align-items:center;gap:4px}
+.med-actions{display:flex;gap:8px;flex-wrap:wrap}
+.stock-bar{height:4px;background:var(--surf2);border-radius:2px;margin-top:8px;overflow:hidden}
+.stock-fill{height:100%;border-radius:2px;background:var(--green)}
+.stock-fill.warn{background:var(--amber)}
+.stock-fill.low{background:var(--red)}
+/* NOTIF */
+.notif-dot{width:8px;height:8px;background:#e05252;border-radius:50%;display:inline-block;margin-left:4px;vertical-align:middle}
+.notif-panel{position:fixed;top:56px;right:16px;width:360px;max-height:70vh;overflow-y:auto;background:var(--surf);border:1px solid var(--bdr);border-radius:var(--rl);box-shadow:0 8px 32px rgba(0,0,0,.12);z-index:100;display:none}
+.notif-panel.open{display:block}
+.notif-item{padding:12px 16px;border-bottom:1px solid var(--bdr);cursor:pointer}
+.notif-item:last-child{border-bottom:none}
+.notif-item:hover{background:var(--surf2)}
+.notif-item.unread{background:var(--pbg)}
+.notif-title{font-size:13px;font-weight:500;margin-bottom:2px}
+.notif-msg{font-size:12px;color:var(--txt2)}
+.notif-time{font-size:11px;color:var(--txt3);margin-top:2px}
+/* SPINNER */
+.spin{display:inline-block;width:18px;height:18px;border:2px solid var(--bdr);border-top-color:var(--txt);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.ldo{display:flex;align-items:center;justify-content:center;padding:40px;gap:12px;color:var(--txt3);font-size:14px}
+.empty{text-align:center;padding:40px 20px;color:var(--txt3);font-size:14px}
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--txt);color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;font-weight:500;z-index:999;transition:transform .3s;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center}
+#toast.show{transform:translateX(-50%) translateY(0)}
+#toast.err{background:var(--red)}
+#toast.ok{background:var(--green)}
+/* ALERT OVERLAY */
+#alert-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;align-items:center;justify-content:center;padding:20px}
+#alert-overlay.open{display:flex}
+.alert-box{background:var(--surf);border-radius:var(--rl);padding:28px;max-width:400px;width:100%;text-align:center}
+.alert-icon{font-size:40px;margin-bottom:12px}
+.alert-title{font-size:18px;font-weight:600;margin-bottom:8px}
+.alert-msg{font-size:14px;color:var(--txt2);margin-bottom:20px;line-height:1.6}
+/* CHECKBOX GROUP */
+.cb-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.cb-opt{display:flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--bdr);border-radius:var(--r);cursor:pointer;font-size:13px;background:var(--surf)}
+.cb-opt input{width:auto;padding:0}
+.cb-opt.selected{border-color:var(--purple);background:var(--pbg);color:var(--purple)}
+/* PHOTO UPLOAD */
+.photo-upload{width:80px;height:80px;border-radius:50%;border:2px dashed var(--bdr);display:flex;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;background:var(--surf2)}
+.photo-upload img{width:100%;height:100%;object-fit:cover}
+.photo-upload-text{font-size:11px;color:var(--txt3);text-align:center;padding:8px}
+/* SECTION DIVIDER */
+.sdiv{border:none;border-top:1px solid var(--bdr);margin:20px 0}
+/* DAY SLATE STYLES */
+.day-slate{margin-bottom:12px;border-radius:var(--rl);overflow:hidden;border:1px solid var(--bdr)}
+.day-slate-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;cursor:pointer;user-select:none;background:var(--surf);transition:background .15s}
+.day-slate-header:hover{background:var(--surf2)}
+.day-slate-header.today{background:var(--pbg);border-bottom:1px solid var(--pbd)}
+.day-slate-title{font-size:14px;font-weight:600;color:var(--txt)}
+.day-slate-title.today{color:var(--purple)}
+.day-slate-summary{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.day-slate-body{background:var(--surf);padding:12px}
+.day-slate-body.hidden{display:none}
+/* ACTION BUTTON STATES */
+.btn-administered{background:#1d6b44!important;color:#fff!important;border-color:#1d6b44!important;cursor:default}
+.btn-refused{background:#8b2020!important;color:#fff!important;border-color:#8b2020!important;cursor:default}
+.btn-missed{background:#7a4f0d!important;color:#fff!important;border-color:#7a4f0d!important;cursor:default}
+.btn-pending{background:var(--txt)!important;color:#fff!important}
+.action-stamp{font-size:11px;color:var(--txt3);margin-top:4px}
+
+@media(max-width:768px){
+  .fr2,.fr3{grid-template-columns:1fr}
+  .hm{display:none!important}
+  .page{padding:12px 10px}
+  .mg{grid-template-columns:1fr 1fr}
+  .mg .met{padding:10px 12px}
+  .mg .mv{font-size:20px}
+  .tabs{width:100%;overflow-x:auto}
+  .tb{flex:1;text-align:center;padding:7px 8px;font-size:12px;min-width:80px}
+  .notif-panel{width:calc(100vw - 20px);right:10px}
+  .res-grid{grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+  .res-card{padding:12px 8px}
+  .res-photo,.res-initials{width:52px;height:52px;font-size:16px}
+  .res-name{font-size:13px}
+  .med-card{padding:12px}
+  .med-name{font-size:14px}
+  .med-actions{gap:6px}
+  .med-actions .btn{font-size:12px;padding:5px 10px}
+  .topbar{padding:0 12px}
+  .logo{font-size:15px}
+  .user-pill span{display:none}
+  .ph{gap:8px}
+  .pt{font-size:18px}
+  table{font-size:12px}
+  td,th{padding:7px 8px}
+  .md{padding:16px;margin:10px}
+  .mo{padding:10px;align-items:flex-start;padding-top:20px}
+  .login-glass{padding:24px 20px}
+  .login-app-name{font-size:19px}
+}
+@media(max-width:400px){
+  .res-grid{grid-template-columns:1fr 1fr}
+  .mg{grid-template-columns:1fr 1fr}
+  .tabs{gap:1px}
+  .tb{font-size:11px;padding:6px 6px}
+}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+<div id="alert-overlay">
+  <div class="alert-box">
+    <div class="alert-icon" id="al-icon">⚠️</div>
+    <div class="alert-title" id="al-title">Alert</div>
+    <div class="alert-msg" id="al-msg"></div>
+    <button class="btn btn-dark btn-full" onclick="closeAlert()">OK, understood</button>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div id="topbar" style="display:none">
+  <div class="topbar">
+    <div class="logo"><div class="logo-dot"></div> MedTrack Pro <span class="logo-sub" id="nav-context"></span></div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="position:relative">
+        <button class="btn-icon" id="notif-btn" onclick="toggleNotif()" style="position:relative">
+          🔔<span id="notif-count" style="display:none;position:absolute;top:-4px;right:-4px;background:#e05252;color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;display:flex;align-items:center;justify-content:center"></span>
+        </button>
+        <div class="notif-panel" id="notif-panel">
+          <div style="padding:12px 16px;border-bottom:1px solid var(--bdr);display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:13px;font-weight:500">Notifications</span>
+            <button class="btn-xs btn-out" onclick="markAllRead()">Mark all read</button>
+          </div>
+          <div id="notif-list"></div>
+        </div>
+      </div>
+      <div class="pill">
+        <div class="av" id="nav-av">?</div>
+        <span id="nav-name" style="font-size:13px"></span>
+      </div>
+      <button class="btn btn-out btn-sm" onclick="doLogout()">Sign out</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ PUBLIC LOGIN ══════════ -->
+<div id="vw-login" class="view active">
+  <div class="lcard">
+    <div class="login-glass">
+      <div class="login-logo-wrap">
+        <div class="login-pill-icon">💊</div>
+        <div class="login-app-name">MedTrack Pro</div>
+        <div class="login-app-sub">Medication Administration System</div>
+      </div>
+      <div class="login-input-wrap">
+        <span class="login-input-icon">👤</span>
+        <input class="login-input" id="l-uid" placeholder="Username" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div class="login-input-wrap">
+        <span class="login-input-icon">🔒</span>
+        <input class="login-input" id="l-pw" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button class="login-btn" id="login-btn" onclick="doLogin()"><span id="login-txt">LOGIN</span></button>
+      <div class="login-err" id="login-err"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SUPER ADMIN LOGIN (hidden — access via ?su=1) ══════════ -->
+<div id="vw-super-login" class="view">
+  <div class="super-lcard">
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="font-size:13px;color:rgba(255,255,255,0.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">System Access</div>
+      <div style="font-size:20px;font-weight:600;color:#fff">MedTrack Pro</div>
+    </div>
+    <div class="card" style="background:#2a2925;border-color:#3a3835">
+      <div class="fg"><label class="fl" style="color:#9e9b93">Password</label>
+        <input type="password" id="su-pw" style="background:#1a1917;border-color:#3a3835;color:#fff" placeholder="Super admin password" onkeydown="if(event.key==='Enter')doSuperLogin()">
+      </div>
+      <button class="btn btn-dark btn-full" id="su-btn" onclick="doSuperLogin()"><span id="su-txt">Access system</span></button>
+      <div id="su-err" style="display:none;margin-top:10px;padding:10px;background:var(--rbg);border-radius:var(--r);font-size:13px;color:var(--red);text-align:center"></div>
+    </div>
+    <div style="text-align:center;margin-top:16px">
+      <button onclick="showView('login')" style="background:none;border:none;color:rgba(255,255,255,0.3);font-size:12px;cursor:pointer">← Back to main login</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SUPER ADMIN ══════════ -->
+<div id="vw-super" class="view">
+  <div class="page">
+    <div class="ph">
+      <div><div class="pt">System Administration</div><div class="ps">Manage all company accounts</div></div>
+      <button class="btn btn-dark" onclick="openAddCompany()">+ New company</button>
+    </div>
+    <div class="mg" id="super-metrics"></div>
+    <div class="card" style="padding:0;overflow:hidden"><div class="tw" id="companies-tbl"></div></div>
+  </div>
+</div>
+
+<!-- ══════════ COMPANY DETAIL (Super Admin) ══════════ -->
+<div id="vw-co-detail" class="view">
+  <div class="page">
+    <div class="ph">
+      <div style="display:flex;align-items:center;gap:14px">
+        <button class="btn btn-out btn-sm" onclick="showView('super');initSuper()">&#8592; Back</button>
+        <div>
+          <div class="pt" id="cod-title"></div>
+          <div class="ps" id="cod-sub"></div>
+        </div>
+      </div>
+      <button class="btn btn-out btn-sm" onclick="exportCompanyData()">📥 Export company data</button>
+    </div>
+    <div class="mg" id="cod-metrics"></div>
+    <div style="font-size:15px;font-weight:500;margin-bottom:12px">Homes & contact details</div>
+    <div class="card" style="padding:0;overflow:hidden"><div class="tw" id="cod-homes-tbl"></div></div>
+  </div>
+</div>
+
+<!-- ══════════ COMPANY ADMIN ══════════ -->
+<div id="vw-company" class="view">
+  <div class="page">
+    <div class="ph">
+      <div><div class="pt" id="co-title">Company Dashboard</div><div class="ps" id="co-sub"></div></div>
+      <button class="btn btn-dark" onclick="openAddHome()">+ Add home</button>
+    </div>
+    <div class="mg" id="co-metrics"></div>
+    <div class="tabs">
+      <button class="tb active" id="co-tab-homes" onclick="coTab('homes')">Homes</button>
+      <button class="tb" id="co-tab-managers" onclick="coTab('managers')">Managers</button>
+    </div>
+    <div id="co-homes"><div class="card" style="padding:0;overflow:hidden"><div class="tw" id="homes-tbl"></div></div></div>
+    <div id="co-managers" style="display:none">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+        <button class="btn btn-dark btn-sm" onclick="openManagerModal()">+ Add manager</button>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden"><div class="tw" id="managers-tbl"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ HOME MANAGER ══════════ -->
+<div id="vw-manager" class="view">
+  <div class="page">
+    <div class="ph">
+      <div><div class="pt" id="mgr-title">Home Dashboard</div><div class="ps" id="mgr-sub"></div></div>
+    </div>
+    <div class="mg" id="mgr-metrics"></div>
+    <div class="tabs">
+      <button class="tb active" id="mgr-tab-residents" onclick="mgrTab('residents')">Residents</button>
+      <button class="tb" id="mgr-tab-employees" onclick="mgrTab('employees')">Employees</button>
+      <button class="tb" id="mgr-tab-logs" onclick="mgrTab('logs')">Audit log</button>
+      <button class="tb" id="mgr-tab-profile" onclick="mgrTab('profile')">My profile</button>
+    </div>
+    <div id="mgr-residents">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+        <button class="btn btn-dark btn-sm" onclick="openAddResident()">+ Add resident</button>
+      </div>
+      <div class="res-grid" id="mgr-res-grid"></div>
+    </div>
+    <div id="mgr-employees" style="display:none">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+        <button class="btn btn-dark btn-sm" onclick="openAddEmployee()">+ Add employee</button>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden"><div class="tw" id="emp-tbl"></div></div>
+    </div>
+    <div id="mgr-logs" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px">
+        <div style="font-size:13px;color:var(--txt2)">Full administration audit trail for this home</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <select id="log-filter-resident" style="font-size:13px;padding:6px 10px;width:180px" onchange="renderLogs()">
+            <option value="">All residents</option>
+          </select>
+          <button class="btn btn-out btn-sm" onclick="exportAuditCSV()">📥 Export for audit</button>
+        </div>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden"><div class="tw" id="logs-tbl"></div></div>
+    </div>
+    <div id="mgr-profile" style="display:none">
+      <div class="card" style="max-width:400px">
+        <div style="font-size:15px;font-weight:500;margin-bottom:16px">Change password</div>
+        <div class="fg"><label class="fl">Current password</label><input type="password" id="mgr-pw-cur"></div>
+        <div class="fg"><label class="fl">New password</label><input type="password" id="mgr-pw-new"></div>
+        <div class="fg"><label class="fl">Confirm new password</label><input type="password" id="mgr-pw-con"></div>
+        <button class="btn btn-dark" onclick="changeMgrPw()">Update password</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ RESIDENT DETAIL (Manager) ══════════ -->
+<div id="vw-resident-mgr" class="view">
+  <div class="page">
+    <div class="ph">
+      <div style="display:flex;align-items:center;gap:14px">
+        <button class="btn btn-out btn-sm" onclick="backToMgr()">&#8592; Back</button>
+        <div>
+          <div class="pt" id="res-mgr-name"></div>
+          <div class="ps" id="res-mgr-sub"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-out btn-sm" onclick="openBookIn()">📦 Book in stock</button>
+        <button class="btn btn-dark btn-sm" onclick="openAddMed()">+ Add medication</button>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tb active" id="res-tab-meds" onclick="resTab('meds')">Regular medications</button>
+      <button class="tb" id="res-tab-prn" onclick="resTab('prn')">PRN medications</button>
+      <button class="tb" id="res-tab-history" onclick="resTab('history')">History</button>
+    </div>
+    <div id="res-meds"><div id="res-meds-content"></div></div>
+    <div id="res-prn" style="display:none"><div id="res-prn-content"></div></div>
+    <div id="res-history" style="display:none"><div class="card" style="padding:0;overflow:hidden"><div class="tw" id="res-hist-tbl"></div></div></div>
+  </div>
+</div>
+
+<!-- ══════════ EMPLOYEE VIEW ══════════ -->
+<div id="vw-employee" class="view">
+  <div class="page">
+    <div class="ph">
+      <div><div class="pt" id="emp-title">Residents</div><div class="ps" id="emp-sub"></div></div>
+    </div>
+    <div class="res-grid" id="emp-res-grid"></div>
+  </div>
+</div>
+
+<!-- ══════════ RESIDENT DETAIL (Employee) ══════════ -->
+<div id="vw-resident-emp" class="view">
+  <div class="page">
+    <div class="ph">
+      <div style="display:flex;align-items:center;gap:14px">
+        <button class="btn btn-out btn-sm" onclick="backToEmp()">&#8592; Back</button>
+        <div>
+          <div class="pt" id="res-emp-name"></div>
+          <div class="ps" id="res-emp-sub"></div>
+        </div>
+      </div>
+      <div id="emp-bookin-btn" style="display:none">
+        <button class="btn btn-out btn-sm" onclick="openBookIn()">📦 Book in stock</button>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tb active" id="emp-tab-meds" onclick="empResTab('meds')">Regular medications</button>
+      <button class="tb" id="emp-tab-prn" onclick="empResTab('prn')">PRN</button>
+    </div>
+    <div id="emp-res-meds"><div id="emp-res-meds-content"></div></div>
+    <div id="emp-res-prn" style="display:none"><div id="emp-res-prn-content"></div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODALS
+══════════════════════════════════════ -->
+<!-- Add Company -->
+<div class="mo" id="mo-company">
+  <div class="md">
+    <div class="mt" id="mo-company-title">Add company</div>
+    <div class="fr2"><div class="fg"><label class="fl">Company name</label><input id="co-name" placeholder="Luther Healthcare Ltd"></div>
+    <div class="fg"><label class="fl">Email (login)</label><input id="co-email" type="email" placeholder="admin@luthercare.com"></div></div>
+    <div class="fr2"><div class="fg"><label class="fl">Phone</label><input id="co-phone" placeholder="+44..."></div>
+    <div class="fg"><label class="fl">Login password</label><input type="password" id="co-pw" placeholder="Set password"></div></div>
+    <div class="fg"><label class="fl">Address</label><input id="co-addr" placeholder="123 High Street, London"></div>
+    <div class="mf"><button class="btn btn-out" onclick="closeModal('mo-company')">Cancel</button><button class="btn btn-dark" id="co-save-btn" onclick="saveCompany()">Add company</button></div>
+  </div>
+</div>
+<!-- Add Home -->
+<div class="mo" id="mo-home">
+  <div class="md">
+    <div class="mt" id="hm-modal-title">Add home</div>
+    <div class="fr2"><div class="fg"><label class="fl">Home name</label><input id="hm-name" placeholder="Breeze Care Home"></div>
+    <div class="fg"><label class="fl">Email</label><input id="hm-email" type="email"></div></div>
+    <div class="fr2"><div class="fg"><label class="fl">Phone</label><input id="hm-phone"></div>
+    <div class="fg"><label class="fl">Address</label><input id="hm-addr"></div></div>
+    <div class="mf"><button class="btn btn-out" onclick="closeModal('mo-home')">Cancel</button><button class="btn btn-dark" id="hm-save-btn" onclick="saveHome()">Add home</button></div>
+  </div>
+</div>
+<!-- Add Manager -->
+<div class="mo" id="mo-manager">
+  <div class="md">
+    <div class="mt" id="mgr-modal-title">Add home manager</div>
+    <div class="fr2"><div class="fg"><label class="fl">First name</label><input id="mgr-first"></div>
+    <div class="fg"><label class="fl">Last name</label><input id="mgr-last"></div></div>
+    <div class="fr2"><div class="fg"><label class="fl">Email (login)</label><input id="mgr-email" type="email"></div>
+    <div class="fg"><label class="fl">Assigned home</label><select id="mgr-home-sel"></select></div></div>
+    <div class="fg"><label class="fl">Notification email (for alerts)</label><input id="mgr-notif-email" type="email" placeholder="Same as login or different"></div>
+    <div class="fg"><label class="fl">Default password</label><input type="password" id="mgr-pw-def" placeholder="They will be asked to change this"></div>
+    <div class="mf"><button class="btn btn-out" onclick="closeModal('mo-manager')">Cancel</button><button class="btn btn-dark" id="mgr-save-btn" onclick="saveManager()">Add manager</button></div>
+  </div>
+</div>
+<!-- Add Employee -->
+<div class="mo" id="mo-employee">
+  <div class="md">
+    <div class="mt" id="emp-modal-title">Add employee</div>
+    <div class="fr2"><div class="fg"><label class="fl">First name</label><input id="emp-first"></div>
+    <div class="fg"><label class="fl">Last name</label><input id="emp-last"></div></div>
+    <div class="fr2"><div class="fg"><label class="fl">Staff number</label><input id="emp-staffno" placeholder="S001"></div>
+    <div class="fg"><label class="fl">User ID (login)</label><input id="emp-userid" placeholder="jsmith01"></div></div>
+    <div class="fr2">
+      <div class="fg"><label class="fl">Employment type</label>
+        <select id="emp-type"><option value="permanent">Permanent</option><option value="temporary">Temporary</option></select></div>
+      <div class="fg"><label class="fl">Medication trained?</label>
+        <select id="emp-trained"><option value="false">No</option><option value="true">Yes</option></select></div>
+    </div>
+    <div class="fg"><label class="fl">Default password</label><input type="password" id="emp-pw" placeholder="They will be asked to change this"></div>
+    <div class="mf"><button class="btn btn-out" onclick="closeModal('mo-employee')">Cancel</button><button class="btn btn-dark" id="emp-save-btn" onclick="saveEmployee()">Add employee</button></div>
+  </div>
+</div>
+<!-- Add Resident -->
+<div class="mo" id="mo-resident">
+  <div class="md">
+    <div class="mt">Add resident</div>
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
+      <div class="photo-upload" id="photo-upload-btn" onclick="document.getElementById('photo-file').click()">
+        <img id="photo-preview" src="" style="display:none">
+        <div id="photo-placeholder" class="photo-upload-text">📷<br>Add photo</div>
+      </div>
+      <input type="file" id="photo-file" accept="image/*" style="display:none" onchange="handlePhoto(this)">
+      <div style="flex:1">
+        <div class="fr2">
+          <div class="fg"><label class="fl">First name</label><input id="res-first"></div>
+          <div class="fg"><label class="fl">Last name</label><input id="res-last"></div>
+        </div>
+        <div class="fr2">
+          <div class="fg"><label class="fl">Date of birth</label><input type="date" id="res-dob"></div>
+          <div class="fg"><label class="fl">Room number</label><input id="res-room" placeholder="Room 12"></div>
+        </div>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Diagnosis / medical conditions <span style="font-weight:400;color:var(--txt3)">(optional — visible to manager and trained staff only)</span></label>
+      <textarea id="res-diagnosis" rows="2" placeholder="e.g. Type 2 Diabetes, Hypertension, Dementia"></textarea>
+    </div>
+    <div class="fg"><label class="fl">Allergies <span style="font-weight:400;color:var(--txt3)">(optional)</span></label>
+      <input id="res-allergies" placeholder="e.g. Penicillin, Aspirin — none if not applicable">
+    </div>
+    <div class="mf"><button class="btn btn-out" onclick="closeModal('mo-resident')">Cancel</button><button class="btn btn-dark" id="res-save-btn" onclick="saveResident()">Add resident</button></div>
+  </div>
+</div>
+<!-- Add Medication -->
+<div class="mo" id="mo-medication">
+  <div class="md" style="max-width:580px">
+    <div class="mt" id="med-modal-title">Add medication</div>
+    <div class="fr2"><div class="fg"><label class="fl">Medication name</label><input id="med-name" placeholder="Paracetamol"></div>
+    <div class="fg"><label class="fl">Dose</label><input id="med-dose" placeholder="500mg"></div></div>
+    <div class="fr2"><div class="fg"><label class="fl">Type</label>
+      <select id="med-type" onchange="toggleMedType()"><option value="regular">Regular</option><option value="prn">PRN (as needed)</option></select></div>
+    <div class="fg"><label class="fl">Route of administration</label>
+      <select id="med-route" onchange="toggleRouteOther()">
+        <option value="oral">Oral (by mouth)</option>
+        <option value="topical">Topical (skin)</option>
+        <option value="transdermal">Transdermal (patch)</option>
+        <option value="inhaled">Inhaled</option>
+        <option value="sublingual">Sublingual (under tongue)</option>
+        <option value="rectal">Rectal (suppository)</option>
+        <option value="eye-drops">Eye drops</option>
+        <option value="ear-drops">Ear drops</option>
+        <option value="nasal">Nasal</option>
+        <option value="injection">Injection</option>
+        <option value="iv">Intravenous (IV)</option>
+        <option value="other">Other</option>
+      </select>
+    </div></div>
+    <div class="fr2"><div class="fg"><label class="fl">Stock unit</label><input id="med-unit" placeholder="tablets" value="tablets"></div>
+    <div class="fg" id="med-route-other-fg" style="display:none"><label class="fl">Specify route</label><input id="med-route-other" placeholder="e.g. gastric tube"></div></div>
+    <div class="fg" id="med-times-fg">
+      <label class="fl">Times of day</label>
+      <div class="cb-group" id="med-times-group">
+        <div class="cb-opt" onclick="toggleTime(this,'morning')" data-val="morning"><input type="checkbox" value="morning" style="display:none"> 🌅 Morning</div>
+        <div class="cb-opt" onclick="toggleTime(this,'afternoon')" data-val="afternoon"><input type="checkbox" value="afternoon" style="display:none"> ☀️ Afternoon</div>
+        <div class="cb-opt" onclick="toggleTime(this,'tea-time')" data-val="tea-time"><input type="checkbox" value="tea-time" style="display:none"> 🍵 Tea-time</div>
+        <div class="cb-opt" onclick="toggleTime(this,'night-time')" data-val="night-time"><input type="checkbox" value="night-time" style="display:none"> 🌙 Night-time</div>
+      </div>
+    </div>
+    <div class="fg" id="med-windows-fg">
+      <label class="fl">Administration time windows <span style="font-weight:400;color:var(--txt3)">(optional — e.g. 08:00–10:00 for morning)</span></label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="med-windows-grid">
+        <div style="background:var(--surf2);border-radius:var(--r);padding:10px 12px" id="mw-morning" style="display:none">
+          <div style="font-size:12px;font-weight:500;margin-bottom:6px">🌅 Morning window</div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <input type="time" id="mw-morning-from" style="flex:1;font-size:13px;padding:6px 8px" placeholder="08:00">
+            <span style="font-size:12px;color:var(--txt3)">to</span>
+            <input type="time" id="mw-morning-to" style="flex:1;font-size:13px;padding:6px 8px" placeholder="10:00">
+          </div>
+        </div>
+        <div style="background:var(--surf2);border-radius:var(--r);padding:10px 12px" id="mw-afternoon" style="display:none">
+          <div style="font-size:12px;font-weight:500;margin-bottom:6px">☀️ Afternoon window</div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <input type="time" id="mw-afternoon-from" style="flex:1;font-size:13px;padding:6px 8px">
+            <span style="font-size:12px;color:var(--txt3)">to</span>
+            <input type="time" id="mw-afternoon-to" style="flex:1;font-size:13px;padding:6px 8px">
+          </div>
+        </div>
+        <div style="background:var(--surf2);border-radius:var(--r);padding:10px 12px" id="mw-teatime" style="display:none">
+          <div style="font-size:12px;font-weight:500;margin-bottom:6px">🍵 Tea-time window</div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <input type="time" id="mw-teatime-from" style="flex:1;font-size:13px;padding:6px 8px">
+            <span style="font-size:12px;color:var(--txt3)">to</span>
+            <input type="time" id="mw-teatime-to" style="flex:1;font-size:13px;padding:6px 8px">
+          </div>
+        </div>
+        <div style="background:var(--surf2);border-radius:var(--r);padding:10px 12px" id="mw-nighttime" style="display:none">
+          <div style="font-size:12px;font-weight:500;margin-bottom:6px">🌙 Night-time window</div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <input type="time" id="mw-nighttime-from" style="flex:1;font-size:13px;padding:6px 8px">
+            <span style="font-size:12px;color:var(--txt3)">to</span>
+            <input type="time" id="mw-nighttime-to" style="flex:1;font-size:13px;padding:6px 8px">
+          </div>
+        </div>
+      </div>
+      <div class="fh">Select time periods above to set their administration windows</div>
+    </div>
+    <div id="med-prn-fg" style="display:none">
+      <div class="fg"><label class="fl">Minimum gap between doses (hours)</label><input type="number" id="med-prn-gap" value="4" min="1" placeholder="4"></div>
+    </div>
+    <div class="fr2">
+      <div class="fg"><label class="fl">Starting stock</label><input type="number" id="med-stock" value="0" min="0"></div>
+      <div class="fg"><label class="fl">Quantity per dose (e.g. 2 tablets)</label><input type="number" id="med-qty-dose" value="1" min="1" placeholder="1" oninput="updateDosePreview()"></div>
+    </div>
+    <div class="fr2">
+      <div class="fg"><label class="fl">Number of doses per day (e.g. 2 = morning &amp; night)</label><input type="number" id="med-daily" value="1" min="1"></div>
+      <div class="fg" style="display:flex;align-items:flex-end;padding-bottom:14px">
+        <div style="font-size:12px;color:var(--txt3);background:var(--surf2);padding:8px 12px;border-radius:var(--r);line-height:1.5">
+          Stock reduces by <strong id="dose-preview">1</strong> unit per administration
+        </div>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Instructions / notes</label><textarea id="med-instructions" rows="2" placeholder="e.g. Take with food"></textarea></div>
+    <div class="fg">
+      <label class="fl">Alert notification emails (low stock)</label>
+      <input id="med-notif-email-input" placeholder="Add email and press Enter" onkeydown="addNotifEmail(event)">
+      <div id="med-notif-emails" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"></div>
+      <div class="fh">Press Enter after each email address</div>
+    </div>
+    <div class="mf"><button class="btn btn-out" onclick="closeModal('mo-medication')">Cancel</button><button class="btn btn-dark" id="med-save-btn" onclick="saveMedication()">Add medication</button></div>
+  </div>
+</div>
+<!-- Edit medication -->
+<div class="mo" id="mo-edit-med">
+  <div class="md" style="max-width:400px">
+    <div class="mt">Edit medication</div>
+    <div class="fg"><label class="fl">Medication name</label><input id="edit-med-name"></div>
+    <div class="fr2">
+      <div class="fg"><label class="fl">Dose</label><input id="edit-med-dose"></div>
+      <div class="fg"><label class="fl">Route</label>
+        <select id="edit-med-route">
+          <option value="oral">Oral</option><option value="topical">Topical</option>
+          <option value="transdermal">Transdermal</option><option value="inhaled">Inhaled</option>
+          <option value="sublingual">Sublingual</option><option value="rectal">Rectal</option>
+          <option value="eye-drops">Eye drops</option><option value="ear-drops">Ear drops</option>
+          <option value="nasal">Nasal</option><option value="injection">Injection</option>
+          <option value="iv">IV</option><option value="other">Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="fr2">
+      <div class="fg"><label class="fl">Quantity per dose</label><input type="number" id="edit-med-qty" min="1" value="1"></div>
+      <div class="fg"><label class="fl">Doses per day (alert)</label><input type="number" id="edit-med-daily" min="1" value="1"></div>
+    </div>
+    <div class="fg"><label class="fl">Instructions</label><input id="edit-med-instructions"></div>
+    <div class="fg"><label class="fl">Low stock alert emails</label>
+      <div id="edit-med-emails" style="font-size:12px;color:var(--txt3);margin-bottom:6px"></div>
+      <input id="edit-med-email-input" placeholder="Add email and press Enter" onkeydown="addEditEmail(event)">
+    </div>
+    <div class="mf">
+      <button class="btn btn-out" onclick="closeModal('mo-edit-med')">Cancel</button>
+      <button class="btn btn-dark" onclick="saveEditMedication()">Save changes</button>
+    </div>
+  </div>
+</div>
+<!-- Book in stock -->
+<div class="mo" id="mo-bookin">
+  <div class="md" style="max-width:440px">
+    <div class="mt">📦 Book in medication stock</div>
+    <div class="fg"><label class="fl">Medication</label><select id="bookin-med-sel"></select></div>
+    <div class="fr2">
+      <div class="fg"><label class="fl">Quantity to add</label><input type="number" id="bookin-qty" min="1" placeholder="28"></div>
+      <div class="fg"><label class="fl">New total (after booking)</label><div id="bookin-after" style="padding:9px 12px;background:var(--surf2);border-radius:var(--r);font-family:var(--mono);font-size:14px">—</div></div>
+    </div>
+    <div class="fg"><label class="fl">Notes (optional)</label><input id="bookin-notes" placeholder="e.g. New prescription from pharmacy"></div>
+    <hr style="border:none;border-top:1px solid var(--bdr);margin:8px 0">
+    <div style="background:var(--amber-bg);border:1px solid var(--amber-bd);border-radius:var(--r);padding:10px 12px;margin-bottom:12px;font-size:12px;color:var(--amber)">
+      ⚠️ <strong>Counter-signature required.</strong> A second staff member must witness and sign off this stock booking.
+    </div>
+    <div class="fr2">
+      <div class="fg"><label class="fl">Witnessed by (full name)</label><input id="bookin-witness" placeholder="Second staff member name"></div>
+      <div class="fg"><label class="fl">Witness staff number</label><input id="bookin-witness-id" placeholder="e.g. S002"></div>
+    </div>
+    <div class="mf"><button class="btn btn-out" onclick="closeModal('mo-bookin')">Cancel</button><button class="btn btn-dark" id="bookin-btn" onclick="saveBookIn()">Book in stock</button></div>
+  </div>
+</div>
+<!-- Administer med -->
+<div class="mo" id="mo-administer">
+  <div class="md" style="max-width:440px">
+    <div class="mt" id="adm-title">Record administration</div>
+    <div id="adm-med-info" style="background:var(--surf2);border-radius:var(--r);padding:12px;margin-bottom:16px;font-size:13px"></div>
+    <div class="fg"><label class="fl">Action</label>
+      <select id="adm-action">
+        <option value="administered">✅ Administered</option>
+        <option value="refused">❌ Refused by resident</option>
+        <option value="missed">⚠️ Missed</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl">Comment</label><textarea id="adm-comment" rows="3" placeholder="Add any relevant notes..."></textarea></div>
+    <div class="mf"><button class="btn btn-out" onclick="closeModal('mo-administer')">Cancel</button><button class="btn btn-dark" id="adm-btn" onclick="saveAdminister()">Save record</button></div>
+  </div>
+</div>
+<!-- Change password (employee) -->
+<div class="mo" id="mo-change-pw">
+  <div class="md" style="max-width:380px">
+    <div class="mt">🔐 Change your password</div>
+    <p style="font-size:13px;color:var(--txt2);margin-bottom:16px">You must set a new password before continuing.</p>
+    <div class="fg"><label class="fl">New password</label><input type="password" id="cp-new" placeholder="Min 6 characters"></div>
+    <div class="fg"><label class="fl">Confirm new password</label><input type="password" id="cp-con" placeholder="Repeat password"></div>
+    <div class="mf"><button class="btn btn-dark btn-full" onclick="saveNewPw()">Set new password</button></div>
+  </div>
+</div>
+
+
+<!-- Reject shift -->
+<div class="mo" id="mo-rej">
+  <div class="md" style="max-width:440px">
+    <div class="mt">Reject shift</div>
+    <div class="fg"><label class="fl">Reason (optional — shown to staff)</label>
+      <textarea id="rej-rsn" rows="3" placeholder="e.g. Hours don't match schedule"></textarea>
+    </div>
+    <div class="mf">
+      <button class="btn btn-out" onclick="closeModal('mo-rej')">Cancel</button>
+      <button class="btn btn-red" onclick="doReject()">Confirm reject</button>
+    </div>
+  </div>
+</div>
+<!-- View PIN -->
+<div class="mo" id="mo-pin">
+  <div class="md" style="max-width:300px;text-align:center">
+    <div class="mt" id="pin-mname" style="text-align:center"></div>
+    <p style="font-size:13px;color:var(--txt2);margin-bottom:14px">Login PIN</p>
+    <div id="pin-mval" style="font-family:var(--mono);font-size:26px;letter-spacing:6px;background:var(--surf2);border-radius:var(--r);padding:14px;display:block;text-align:center;margin:0 auto 16px"></div>
+    <p style="font-size:12px;color:var(--txt3)">Share this securely with the employee.</p>
+    <div class="mf" style="justify-content:center;margin-top:14px">
+      <button class="btn btn-out" onclick="closeModal('mo-pin')">Close</button>
+    </div>
+  </div>
+</div>
+<script>
+// ════════════════════════════════════════════════
+// CONFIG
+// ════════════════════════════════════════════════
+const SB_URL='https://ugomcdfwzbrqtgbuhokh.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnb21jZGZ3emJycXRnYnVob2toIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNjEyMTQsImV4cCI6MjA5MjczNzIxNH0.d1RU2TE6EbykiTkJmKD2EdUu5AFx0Y_0Rwvw68yA-bY';
+const RESEND_KEY='re_anxxNbnq_G3FVKNM4TSkTJ8ot92iT8mLV';
+const SUPER_PW_LOCAL='mt_super_pw';
+
+let sb,me={},currentRole='super',loginNotifEmails=[],medNotifEmails=[];
+
+
+// ── SESSION TIMEOUT (30 minutes inactivity) ──
+let sessionTimer=null;
+const SESSION_TIMEOUT=30*60*1000; // 30 minutes
+
+function resetSessionTimer(){
+  if(!me||!me.role)return;
+  clearTimeout(sessionTimer);
+  sessionTimer=setTimeout(()=>{
+    toast('Session expired due to inactivity. Please sign in again.','err');
+    setTimeout(()=>doLogout(),2000);
+  },SESSION_TIMEOUT);
+}
+function startSessionTimer(){
+  resetSessionTimer();
+  // Reset on any user interaction
+  ['click','keydown','mousemove','touchstart'].forEach(evt=>{
+    document.addEventListener(evt,resetSessionTimer,{passive:true});
+  });
+}
+function stopSessionTimer(){
+  clearTimeout(sessionTimer);
+}
+// ── PASSWORD HASHING (SHA-256 via Web Crypto) ──
+async function hashPassword(password){
+  const msgBuffer=new TextEncoder().encode(password);
+  const hashBuffer=await crypto.subtle.digest('SHA-256',msgBuffer);
+  const hashArray=Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+// Compare password — handles both plain text (old) and hashed (new)
+async function verifyPassword(input,stored){
+  if(!stored)return false;
+  // If stored is 64 chars it's already a SHA-256 hash
+  if(stored.length===64){
+    const hashed=await hashPassword(input);
+    return hashed===stored;
+  }
+  // Legacy plain text comparison
+  return input===stored;
+}
+let currentResidentId=null,currentMedId=null,currentAdmTime=null,currentAdmDate=null,editingEmpId=null,editingCoId=null;
+
+// ════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  sb=supabase.createClient(SB_URL,SB_KEY);
+  // Check if arriving from admin.html — uses localStorage flag + URL param
+  const isSuperMode=window.location.search.includes('mode=super')&&localStorage.getItem('mt_super_session')==='1';
+  if(isSuperMode){
+    localStorage.removeItem('mt_super_session');
+    // Clean URL without reloading
+    window.history.replaceState({},'',window.location.pathname);
+    me={role:'super'};
+    setNav('S','Super Admin','av-purple','System Admin');
+    initSuper().then(()=>{showView('super');startSessionTimer();});
+  } else {
+    showView('login');
+  }
+});
+
+// ════════════════════════════════════════════════
+// TOAST & ALERTS
+// ════════════════════════════════════════════════
+function toast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=type?`show ${type}`:'show';
+  setTimeout(()=>t.className='',2800);
+}
+function showAlert(icon,title,msg){
+  document.getElementById('al-icon').textContent=icon;
+  document.getElementById('al-title').textContent=title;
+  document.getElementById('al-msg').textContent=msg;
+  document.getElementById('alert-overlay').classList.add('open');
+}
+function closeAlert(){document.getElementById('alert-overlay').classList.remove('open');}
+
+// ════════════════════════════════════════════════
+// VIEWS
+// ════════════════════════════════════════════════
+function showView(v){
+  // Explicitly hide ALL views with inline style — no CSS class conflicts possible
+  document.querySelectorAll('.view').forEach(x=>{
+    x.style.display='none';
+    x.classList.remove('active','flex-view');
+  });
+  const el=document.getElementById('vw-'+v);
+  el.classList.add('active');
+  // Set correct display type per view
+  const flexViews=['login','super-login'];
+  el.style.display=flexViews.includes(v)?'flex':'block';
+  const noTop=['login','super-login'];
+  document.getElementById('topbar').style.display=noTop.includes(v)?'none':'block';
+}
+
+// ════════════════════════════════════════════════
+// MODAL HELPERS
+// ════════════════════════════════════════════════
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.mo').forEach(m=>m.addEventListener('click',e=>{if(e.target===m&&m.id!=='mo-change-pw')m.classList.remove('open');}));
+
+// ════════════════════════════════════════════════
+// LOGIN
+// ════════════════════════════════════════════════
+function showLoginErr(msg){
+  const e=document.getElementById('login-err');
+  e.textContent=msg; e.style.display='block';
+}
+
+// Smart login — tries company email, then manager email, then employee user_id
+async function doLogin(){
+  const btn=document.getElementById('login-btn');
+  btn.disabled=true;
+  document.getElementById('login-txt').innerHTML='<span class="spin"></span>';
+  document.getElementById('login-err').style.display='none';
+  const uid=document.getElementById('l-uid').value.trim();
+  const pw=document.getElementById('l-pw').value;
+  if(!uid||!pw){showLoginErr('Please enter your username and password');btn.disabled=false;document.getElementById('login-txt').textContent='LOGIN';return;}
+  try{
+    // Try company (email login)
+    const {data:co}=await sb.from('companies').select('*').eq('email',uid).maybeSingle();
+    if(co){
+      const coMatch=await verifyPassword(pw,co.password);
+      if(!coMatch){showLoginErr('Incorrect password');return;}
+      if(!co.is_active){showLoginErr('This account has been suspended. Please contact the system administrator.');return;}
+      me={role:'company',company:co};
+      setNav(co.name[0],'Company','av-teal',co.name);
+      await initCompany(); showView('company'); startSessionTimer(); return;
+    }
+    // Try manager (email login)
+    const {data:mgr}=await sb.from('managers').select('*').eq('email',uid).maybeSingle();
+    if(mgr){
+      const mgrMatch=await verifyPassword(pw,mgr.password);
+      if(!mgrMatch){showLoginErr('Incorrect password');return;}
+      // Check company is not suspended
+      const {data:mgrCo}=await sb.from('companies').select('is_active').eq('id',mgr.company_id).single();
+      if(mgrCo&&!mgrCo.is_active){showLoginErr('Your organisation account has been suspended. Please contact the system administrator.');return;}
+      me={role:'manager',manager:mgr};
+      if(mgr.must_change_password){openModal('mo-change-pw');return;}
+      const {data:home}=await sb.from('homes').select('*').eq('id',mgr.home_id).single();
+      me.home={...home,company_id:home.company_id||mgr.company_id};
+      setNav(mgr.first_name[0],'Manager','av-blue',mgr.first_name+' '+mgr.last_name);
+      await initManager(); showView('manager'); startSessionTimer(); return;
+    }
+    // Try employee (user_id login)
+    const {data:emp}=await sb.from('employees').select('*').eq('user_id',uid).maybeSingle();
+    if(emp){
+      const empMatch=await verifyPassword(pw,emp.password);
+      if(!empMatch){showLoginErr('Incorrect password');return;}
+      if(!emp.is_active){showLoginErr('Your account is inactive. Contact your manager.');return;}
+      // Check company is not suspended
+      const {data:empCo}=await sb.from('companies').select('is_active').eq('id',emp.company_id).single();
+      if(empCo&&!empCo.is_active){showLoginErr('Your organisation account has been suspended. Please contact the system administrator.');return;}
+      me={role:'employee',employee:emp};
+      if(emp.must_change_password){openModal('mo-change-pw');return;}
+      const {data:home}=await sb.from('homes').select('*').eq('id',emp.home_id).single();
+      me.home={...home,company_id:home.company_id||emp.company_id};
+      setNav(emp.first_name[0],'Employee','av-green',emp.first_name+' '+emp.last_name);
+      await initEmployee(); showView('employee'); startSessionTimer(); return;
+    }
+    showLoginErr('Username or password is incorrect');
+  }finally{
+    btn.disabled=false;
+    document.getElementById('login-txt').textContent='LOGIN';
+  }
+}
+
+// Super admin login — only accessible via ?su=1 in URL
+async function doSuperLogin(){
+  const btn=document.getElementById('su-btn');
+  btn.disabled=true; document.getElementById('su-txt').innerHTML='<span class="spin"></span>';
+  const pw=document.getElementById('su-pw').value;
+  const stored=localStorage.getItem(SUPER_PW_LOCAL)||'MedTrack2024!';
+  const suMatch=await verifyPassword(pw,stored);
+  if(!suMatch){
+    document.getElementById('su-err').textContent='Incorrect password';
+    document.getElementById('su-err').style.display='block';
+    btn.disabled=false; document.getElementById('su-txt').textContent='Access system'; return;
+  }
+  me={role:'super'};
+  setNav('S','Super Admin','av-purple','System Admin');
+  await initSuper(); showView('super');
+  btn.disabled=false; document.getElementById('su-txt').textContent='Access system';
+}
+
+function setNav(initials,role,avClass,name){
+  document.getElementById('nav-av').textContent=initials;
+  document.getElementById('nav-av').className='av '+avClass;
+  document.getElementById('nav-name').textContent=name;
+  document.getElementById('nav-context').textContent='· '+role;
+}
+function doLogout(){
+  stopSessionTimer();
+  me={};
+  window.location.replace('./index.html');
+}
+
+// Change password on first login
+async function saveNewPw(){
+  const nw=document.getElementById('cp-new').value;
+  const con=document.getElementById('cp-con').value;
+  if(nw.length<6){toast('Password must be at least 6 characters','err');return;}
+  if(nw!==con){toast('Passwords do not match','err');return;}
+  if(me.role==='manager'){
+    const hashedNw=await hashPassword(nw);
+  await sb.from('managers').update({password:hashedNw,must_change_password:false}).eq('id',me.manager.id);
+    me.manager.password=nw; me.manager.must_change_password=false;
+    closeModal('mo-change-pw');
+    const {data:home}=await sb.from('homes').select('*').eq('id',me.manager.home_id).single();
+    me.home={...home,company_id:home.company_id||me.manager.company_id};
+    setNav(me.manager.first_name[0],'Manager','av-blue',me.manager.first_name+' '+me.manager.last_name);
+    await initManager(); showView('manager');
+  } else {
+    const hashedNwE=await hashPassword(nw);
+  await sb.from('employees').update({password:hashedNwE,must_change_password:false}).eq('id',me.employee.id);
+    me.employee.password=nw; me.employee.must_change_password=false;
+    closeModal('mo-change-pw');
+    const {data:home}=await sb.from('homes').select('*').eq('id',me.employee.home_id).single();
+    me.home={...home,company_id:home.company_id||me.employee.company_id};
+    setNav(me.employee.first_name[0],'Employee','av-green',me.employee.first_name+' '+me.employee.last_name);
+    await initEmployee(); showView('employee');
+  }
+  toast('Password updated','ok');
+}
+
+// ════════════════════════════════════════════════
+// SUPER ADMIN
+// ════════════════════════════════════════════════
+async function initSuper(){
+  const {data:cosRaw}=await sb.from('companies').select('*').order('name');
+  const cos=cosRaw||[];
+  // Fetch global stats
+  const [{data:homesAll},{data:residentsAll},{data:empsAll}]=await Promise.all([
+    sb.from('homes').select('id,company_id,name,created_at').order('created_at',{ascending:false}),
+    sb.from('residents').select('id,company_id,created_at').eq('is_active',true),
+    sb.from('employees').select('id,company_id').eq('is_active',true)
+  ]);
+  const totalHomes=(homesAll||[]).length;
+  const totalResidents=(residentsAll||[]).length;
+  const totalEmps=(empsAll||[]).length;
+
+  document.getElementById('super-metrics').innerHTML=`
+    <div class="met"><div class="ml">Companies</div><div class="mv">${cos.length}</div><div class="ms">${cos.filter(x=>x.is_active).length} active</div></div>
+    <div class="met"><div class="ml">Total homes</div><div class="mv">${totalHomes}</div><div class="ms">across all companies</div></div>
+    <div class="met"><div class="ml">Total residents</div><div class="mv">${totalResidents}</div><div class="ms">active</div></div>
+    <div class="met"><div class="ml">Total staff</div><div class="mv">${totalEmps}</div><div class="ms">active employees</div></div>`;
+
+  if(!cos.length){document.getElementById('companies-tbl').innerHTML='<div class="empty">No companies yet. Click "+ New company" to add one.</div>';return;}
+
+  // Build per-company stats
+  const homeMap={};(homesAll||[]).forEach(h=>{if(!homeMap[h.company_id])homeMap[h.company_id]=[];homeMap[h.company_id].push(h);});
+  const resMap={};(residentsAll||[]).forEach(r=>{resMap[r.company_id]=(resMap[r.company_id]||0)+1;});
+  const empMap={};(empsAll||[]).forEach(e=>{empMap[e.company_id]=(empMap[e.company_id]||0)+1;});
+
+  const rows=cos.map(co=>`<tr>
+    <td>
+      <strong style="cursor:pointer;color:var(--purple);text-decoration:underline" onclick="viewCompanyDetail('${co.id}')">${co.name}</strong><br>
+      <span style="font-size:11px;color:var(--txt3)">${co.email}</span>
+    </td>
+    <td>${co.phone||'—'}</td>
+    <td style="font-family:var(--mono);font-size:12px">
+      🏠 ${(homeMap[co.id]||[]).length} homes<br>
+      👥 ${resMap[co.id]||0} residents<br>
+      👤 ${empMap[co.id]||0} staff
+    </td>
+    <td><span class="badge ${co.is_active?'b-green':'b-red'}">${co.is_active?'Active':'Suspended'}</span></td>
+    <td style="white-space:nowrap">
+      <div style="display:flex;gap:4px;flex-wrap:wrap">
+        <button class="btn btn-out btn-xs" onclick="editCompany('${co.id}')">Edit</button>
+        <button class="btn ${co.is_active?'btn-amber':'btn-green'} btn-xs" onclick="toggleCompany('${co.id}',${co.is_active},'${co.name}')">${co.is_active?'🔒 Suspend':'🔓 Unsuspend'}</button>
+        <button class="btn btn-red btn-xs" onclick="deleteCompany('${co.id}','${co.name}')">Delete</button>
+      </div>
+    </td></tr>`).join('');
+  document.getElementById('companies-tbl').innerHTML=`<table>
+    <thead><tr><th>Company</th><th>Phone</th><th>Activity</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>${rows}</tbody></table>`;
+}
+function openAddCompany(){
+  editingCoId=null;
+  document.getElementById('mo-company-title').textContent='Add company';
+  document.getElementById('co-save-btn').textContent='Add company';
+  ['co-name','co-email','co-phone','co-pw','co-addr'].forEach(id=>document.getElementById(id).value='');
+  openModal('mo-company');
+}
+async function saveCompany(){
+  const name=document.getElementById('co-name').value.trim();
+  const email=document.getElementById('co-email').value.trim();
+  const phone=document.getElementById('co-phone').value.trim();
+  const pw=document.getElementById('co-pw').value;
+  const addr=document.getElementById('co-addr').value.trim();
+  if(!name||!email||!pw){toast('Fill all required fields','err');return;}
+  const btn=document.getElementById('co-save-btn');btn.disabled=true;btn.textContent='Saving...';
+  let dbError=null;
+  if(editingCoId){
+    const upd={name,email,phone,address:addr};
+    if(pw) upd.password=await hashPassword(pw);
+    const {error}=await sb.from('companies').update(upd).eq('id',editingCoId);
+    dbError=error;
+    if(!error) toast('Company updated','ok');
+  } else {
+    const hashedPw=await hashPassword(pw);
+  const {error}=await sb.from('companies').insert({name,email,phone,address:addr,password:hashedPw});
+    dbError=error;
+    if(!error) toast('Company added — they can now log in','ok');
+  }
+  btn.disabled=false;btn.textContent=editingCoId?'Save changes':'Add company';
+  if(dbError){toast('Error: '+dbError.message,'err');return;}
+  editingCoId=null;closeModal('mo-company');await initSuper();
+}
+async function editCompany(id){
+  const {data}=await sb.from('companies').select('*').eq('id',id).single();
+  document.getElementById('co-name').value=data.name;
+  document.getElementById('co-email').value=data.email;
+  document.getElementById('co-phone').value=data.phone||'';
+  document.getElementById('co-pw').value='';
+  document.getElementById('co-addr').value=data.address||'';
+  document.getElementById('mo-company-title').textContent='Edit company';
+  document.getElementById('co-save-btn').textContent='Save changes';
+  editingCoId=id;openModal('mo-company');
+}
+async function deleteCompany(id,name){
+  if(!confirm(`Delete "${name}" and ALL its data? This cannot be undone.`))return;
+  await sb.from('companies').delete().eq('id',id);
+  toast('Company deleted','ok');await initSuper();
+}
+async function toggleCompany(id,isActive,name){
+  const action=isActive?'suspend':'unsuspend';
+  const msg=isActive
+    ?`Suspend "${name}"? They will not be able to log in until unsuspended.`
+    :`Unsuspend "${name}"? They will regain full access immediately.`;
+  if(!confirm(msg))return;
+  const {error}=await sb.from('companies').update({is_active:!isActive}).eq('id',id);
+  if(error){toast('Error: '+error.message,'err');return;}
+  toast(`Company ${action}ed`,'ok');
+  await initSuper();
+}
+
+// ════════════════════════════════════════════════
+// COMPANY ADMIN
+// ════════════════════════════════════════════════
+
+// ── SUPER ADMIN COMPANY DETAIL ──
+let viewingCompanyId=null;
+
+async function viewCompanyDetail(id){
+  viewingCompanyId=id;
+  const {data:co}=await sb.from('companies').select('*').eq('id',id).single();
+  if(!co)return;
+
+  document.getElementById('cod-title').textContent=co.name;
+  document.getElementById('cod-sub').textContent=co.email+(co.phone?' · '+co.phone:'')+(co.address?' · '+co.address:'');
+
+  // Fetch homes with their managers
+  const {data:homes}=await sb.from('homes').select('*').eq('company_id',id).order('name');
+  const {data:managers}=await sb.from('managers').select('*').eq('company_id',id);
+  const {data:residents}=await sb.from('residents').select('id').eq('company_id',id).eq('is_active',true);
+  const {data:staff}=await sb.from('employees').select('id').eq('company_id',id).eq('is_active',true);
+
+  document.getElementById('cod-metrics').innerHTML=`
+    <div class="met"><div class="ml">Homes</div><div class="mv">${(homes||[]).length}</div><div class="ms">registered</div></div>
+    <div class="met"><div class="ml">Managers</div><div class="mv">${(managers||[]).length}</div><div class="ms">assigned</div></div>
+    <div class="met"><div class="ml">Residents</div><div class="mv">${(residents||[]).length}</div><div class="ms">active</div></div>
+    <div class="met"><div class="ml">Staff</div><div class="mv">${(staff||[]).length}</div><div class="ms">active</div></div>`;
+
+  if(!homes||!homes.length){
+    document.getElementById('cod-homes-tbl').innerHTML='<div class="empty">No homes added yet.</div>';
+    showView('co-detail');return;
+  }
+
+  // Build home rows with manager info
+  const mgrMap={};
+  (managers||[]).forEach(m=>{mgrMap[m.home_id]=m;});
+
+  const rows=(homes||[]).map(h=>{
+    const mgr=mgrMap[h.id];
+    return `<tr>
+      <td><strong>${h.name}</strong>${h.address?'<br><span style="font-size:11px;color:var(--txt3)">'+h.address+'</span>':''}</td>
+      <td>${h.email||'—'}</td>
+      <td>${h.phone||'—'}</td>
+      <td>${mgr?mgr.first_name+' '+mgr.last_name:'<span class="badge b-amber">No manager</span>'}</td>
+      <td>${mgr?mgr.email:'—'}</td>
+      <td>${mgr?mgr.notification_email||mgr.email:'—'}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('cod-homes-tbl').innerHTML=`<table>
+    <thead><tr>
+      <th>Home name</th><th>Home email</th><th>Home phone</th>
+      <th>Manager</th><th>Manager email</th><th>Alert email</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+
+  showView('co-detail');
+}
+
+async function exportCompanyData(){
+  const {data:co}=await sb.from('companies').select('*').eq('id',viewingCompanyId).single();
+  const {data:homes}=await sb.from('homes').select('*').eq('company_id',viewingCompanyId).order('name');
+  const {data:managers}=await sb.from('managers').select('*').eq('company_id',viewingCompanyId);
+  const mgrMap={};(managers||[]).forEach(m=>{mgrMap[m.home_id]=m;});
+
+  let csv='Company,Home Name,Home Address,Home Email,Home Phone,Manager Name,Manager Email,Alert Email\n';
+  (homes||[]).forEach(h=>{
+    const mgr=mgrMap[h.id];
+    csv+=`"${co.name}","${h.name}","${h.address||''}","${h.email||''}","${h.phone||''}",`
+      +`"${mgr?mgr.first_name+' '+mgr.last_name:''}","${mgr?mgr.email:''}","${mgr?mgr.notification_email||mgr.email:''}"
+`;
+  });
+
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download=co.name.replace(/[\s]+/g,'-').toLowerCase()+'-data.csv';
+  a.click();
+  toast('Company data exported','ok');
+}
+async function initCompany(){
+  const co=me.company;
+  document.getElementById('co-title').textContent=co.name;
+  document.getElementById('co-sub').textContent=co.address||co.email;
+  const {data:homesRaw}=await sb.from('homes').select('*').eq('company_id',co.id).order('name');
+  const {data:managersRaw}=await sb.from('managers').select('*').eq('company_id',co.id);
+  const homes=homesRaw||[];
+  const managers=managersRaw||[];
+  document.getElementById('co-metrics').innerHTML=`
+    <div class="met"><div class="ml">Homes</div><div class="mv">${homes.length}</div><div class="ms">managed</div></div>
+    <div class="met"><div class="ml">Managers</div><div class="mv">${managers.length}</div><div class="ms">assigned</div></div>`;
+  coTab('homes');
+}
+function coTab(t){
+  ['homes','managers'].forEach(x=>{
+    document.getElementById('co-'+x).style.display=x===t?'':'none';
+    document.getElementById('co-tab-'+x).classList.toggle('active',x===t);
+  });
+  if(t==='homes')renderHomes();
+  if(t==='managers')renderManagers();
+}
+async function renderHomes(){
+  const {data:homes}=await sb.from('homes').select('*').eq('company_id',me.company.id).order('name');
+  if(!homes.length){document.getElementById('homes-tbl').innerHTML='<div class="empty">No homes yet. Click "+ Add home".</div>';return;}
+  const rows=homes.map(h=>`<tr>
+    <td><strong>${h.name}</strong></td>
+    <td class="hm">${h.address||'—'}</td>
+    <td class="hm">${h.email||'—'}</td>
+    <td class="hm">${h.phone||'—'}</td>
+    <td style="white-space:nowrap;display:flex;gap:4px">
+      <button class="btn btn-out btn-xs" onclick="editHome('${h.id}')">Edit</button>
+      <button class="btn btn-red btn-xs" onclick="deleteHome('${h.id}','${h.name}')">Delete</button>
+    </td></tr>`).join('');
+  document.getElementById('homes-tbl').innerHTML=`<table><thead><tr><th>Home name</th><th class="hm">Address</th><th class="hm">Email</th><th class="hm">Phone</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+let editingHomeId=null;
+function openAddHome(){
+  editingHomeId=null;
+  document.getElementById('hm-modal-title').textContent='Add home';
+  document.getElementById('hm-save-btn').textContent='Add home';
+  ['hm-name','hm-email','hm-phone','hm-addr'].forEach(id=>document.getElementById(id).value='');
+  openModal('mo-home');
+}
+async function editHome(id){
+  const {data:h}=await sb.from('homes').select('*').eq('id',id).single();
+  if(!h)return;
+  editingHomeId=id;
+  document.getElementById('hm-modal-title').textContent='Edit home';
+  document.getElementById('hm-save-btn').textContent='Save changes';
+  document.getElementById('hm-name').value=h.name;
+  document.getElementById('hm-email').value=h.email||'';
+  document.getElementById('hm-phone').value=h.phone||'';
+  document.getElementById('hm-addr').value=h.address||'';
+  openModal('mo-home');
+}
+async function saveHome(){
+  const name=document.getElementById('hm-name').value.trim();
+  if(!name){toast('Home name required','err');return;}
+  const btn=document.getElementById('hm-save-btn');btn.disabled=true;btn.textContent='Saving...';
+  const payload={name,address:document.getElementById('hm-addr').value.trim(),email:document.getElementById('hm-email').value.trim(),phone:document.getElementById('hm-phone').value.trim()};
+  let homeErr=null;
+  if(editingHomeId){
+    const {error}=await sb.from('homes').update(payload).eq('id',editingHomeId);
+    homeErr=error;
+  } else {
+    const {error}=await sb.from('homes').insert({...payload,company_id:me.company.id});
+    homeErr=error;
+  }
+  btn.disabled=false;btn.textContent=editingHomeId?'Save changes':'Add home';
+  if(homeErr){toast('Error: '+homeErr.message,'err');return;}
+  editingHomeId=null;
+  closeModal('mo-home');toast(editingHomeId!==null?'Home updated':'Home saved','ok');await initCompany();
+}
+async function deleteHome(id,name){
+  if(!confirm(`Delete "${name}" and all its data?`))return;
+  await sb.from('homes').delete().eq('id',id);
+  toast('Home deleted','ok');await initCompany();
+}
+async function renderManagers(){
+  const {data:mgrs}=await sb.from('managers').select('*').eq('company_id',me.company.id).order('first_name');
+  const {data:allHomes}=await sb.from('homes').select('id,name').eq('company_id',me.company.id);
+  const homeNameMap=Object.fromEntries((allHomes||[]).map(h=>[h.id,h.name]));
+  if(!mgrs.length){document.getElementById('managers-tbl').innerHTML='<div class="empty">No managers yet.</div>';return;}
+  const rows=mgrs.map(m=>`<tr>
+    <td><strong>${m.first_name} ${m.last_name}</strong></td>
+    <td>${m.email}</td>
+    <td>${homeNameMap[m.home_id]||'—'}</td>
+    <td style="white-space:nowrap;display:flex;gap:4px">
+      <button class="btn btn-out btn-xs" onclick="editManager('${m.id}')">Edit</button>
+      <button class="btn btn-red btn-xs" onclick="deleteManager('${m.id}')">Delete</button>
+    </td></tr>`).join('');
+  document.getElementById('managers-tbl').innerHTML=`<table><thead><tr><th>Name</th><th>Email</th><th>Home</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+let editingMgrId=null;
+async function editManager(id){
+  const {data:m}=await sb.from('managers').select('*').eq('id',id).single();
+  if(!m)return;
+  editingMgrId=id;
+  const {data:homes}=await sb.from('homes').select('*').eq('company_id',me.company.id).order('name');
+  const sel=document.getElementById('mgr-home-sel');
+  sel.innerHTML=(homes||[]).map(h=>`<option value="${h.id}"${h.id===m.home_id?' selected':''}>${h.name}</option>`).join('');
+  document.getElementById('mgr-first').value=m.first_name;
+  document.getElementById('mgr-last').value=m.last_name;
+  document.getElementById('mgr-email').value=m.email;
+  document.getElementById('mgr-notif-email').value=m.notification_email||'';
+  document.getElementById('mgr-pw-def').value='';
+  document.getElementById('mgr-modal-title').textContent='Edit manager';
+  document.getElementById('mgr-save-btn').textContent='Save changes';
+  openModal('mo-manager');
+}
+async function saveManager(){
+  const first=document.getElementById('mgr-first').value.trim();
+  const last=document.getElementById('mgr-last').value.trim();
+  const email=document.getElementById('mgr-email').value.trim();
+  const homeId=document.getElementById('mgr-home-sel').value;
+  const pw=document.getElementById('mgr-pw-def').value;
+  const notifEmail=document.getElementById('mgr-notif-email').value.trim();
+  if(!first||!last||!email||!homeId){toast('Fill all required fields','err');return;}
+  if(!editingMgrId&&!pw){toast('Password is required for new managers','err');return;}
+  const btn=document.getElementById('mgr-save-btn');btn.disabled=true;btn.textContent='Saving...';
+  let mgrErr=null;
+  if(editingMgrId){
+    const upd={first_name:first,last_name:last,email,home_id:homeId,notification_email:notifEmail||email};
+    if(pw) upd.password=await hashPassword(pw);
+    const {error}=await sb.from('managers').update(upd).eq('id',editingMgrId);
+    mgrErr=error;
+  } else {
+    const {error}=await sb.from('managers').insert({home_id:homeId,company_id:me.company.id,first_name:first,last_name:last,email,password:await hashPassword(pw),notification_email:notifEmail||email,must_change_password:true});
+    mgrErr=error;
+    if(!error) await sendEmail(email,`Welcome to MedTrack Pro — ${first}`,`You have been added as Home Manager.\n\nLogin: ${email}\nPassword: ${pw}\n\nPlease change your password after first login.`);
+  }
+  btn.disabled=false;btn.textContent=editingMgrId?'Save changes':'Add manager';
+  if(mgrErr){toast('Error: '+mgrErr.message,'err');return;}
+  editingMgrId=null;
+  closeModal('mo-manager');toast(editingMgrId!==null?'Manager updated':'Manager added','ok');await initCompany();
+}
+async function deleteManager(id){
+  if(!confirm('Delete this manager?'))return;
+  await sb.from('managers').delete().eq('id',id);
+  toast('Manager deleted','ok');coTab('managers');
+}
+async function openManagerModal(){
+  editingMgrId=null;
+  document.getElementById('mgr-modal-title').textContent='Add home manager';
+  document.getElementById('mgr-save-btn').textContent='Add manager';
+  const {data:homes}=await sb.from('homes').select('*').eq('company_id',me.company.id).order('name');
+  const sel=document.getElementById('mgr-home-sel');
+  if(!homes||!homes.length){
+    toast('Please add at least one home first before adding a manager','err');
+    return;
+  }
+  sel.innerHTML=homes.map(h=>`<option value="${h.id}">${h.name}</option>`).join('');
+  ['mgr-first','mgr-last','mgr-email','mgr-notif-email','mgr-pw-def'].forEach(id=>document.getElementById(id).value='');
+  openModal('mo-manager');
+}
+
+// ════════════════════════════════════════════════
+// HOME MANAGER
+// ════════════════════════════════════════════════
+async function initManager(){
+  const home=me.home;
+  document.getElementById('mgr-title').textContent=home.name;
+  document.getElementById('mgr-sub').textContent='Home manager dashboard · '+new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const {data:residents}=await sb.from('residents').select('*').eq('home_id',home.id).eq('is_active',true);
+  const {data:emps}=await sb.from('employees').select('*').eq('home_id',home.id);
+  const today=new Date().toISOString().slice(0,10);
+  const {data:todayRec}=await sb.from('administration_records').select('*').eq('home_id',home.id).eq('scheduled_date',today);
+  document.getElementById('mgr-metrics').innerHTML=`
+    <div class="met"><div class="ml">Residents</div><div class="mv">${residents.length}</div><div class="ms">active</div></div>
+    <div class="met"><div class="ml">Employees</div><div class="mv">${emps.length}</div><div class="ms">registered</div></div>
+    <div class="met"><div class="ml">Today's records</div><div class="mv">${todayRec.length}</div><div class="ms">administrations logged</div></div>`;
+  await loadNotifications();
+  mgrTab('residents');
+}
+function mgrTab(t){
+  ['residents','employees','logs','profile'].forEach(x=>{
+    document.getElementById('mgr-'+x).style.display=x===t?'':'none';
+    document.getElementById('mgr-tab-'+x).classList.toggle('active',x===t);
+  });
+  if(t==='residents')renderMgrResidents();
+  if(t==='employees')renderEmployees();
+  if(t==='logs')renderLogs();
+}
+async function renderMgrResidents(){
+  const {data:res}=await sb.from('residents').select('*').eq('home_id',me.home.id).eq('is_active',true).order('first_name');
+  if(!res.length){document.getElementById('mgr-res-grid').innerHTML='<div class="empty">No residents yet.</div>';return;}
+  document.getElementById('mgr-res-grid').innerHTML=res.map(r=>resCard(r,'mgr')).join('');
+}
+function resCard(r,mode){
+  const bg=initBg(r.first_name+r.last_name);
+  const photo=r.photo_url?`<img src="${r.photo_url}" class="res-photo" alt="">`:`<div class="res-initials" style="background:${bg}">${r.first_name[0]}${r.last_name[0]}</div>`;
+  return `<div class="res-card" onclick="openResident('${r.id}','${mode}')">
+    ${photo}
+    <div class="res-name">${r.first_name} ${r.last_name}</div>
+    <div class="res-room">${r.room_number?'Room '+r.room_number:''}</div>
+  </div>`;
+}
+function initBg(name){const colors=['#4a1d8a','#085041','#0e4d8a','#7a4f0d','#8b2020','#1d6b44'];let h=0;for(let c of name)h=(h*31+c.charCodeAt(0))&0xffffffff;return colors[Math.abs(h)%colors.length];}
+
+async function openResident(id,mode){
+  currentResidentId=id;
+  const {data:res}=await sb.from('residents').select('*').eq('id',id).single();
+  if(mode==='mgr'){
+    document.getElementById('res-mgr-name').textContent=res.first_name+' '+res.last_name;
+    let resSub=(res.room_number?'Room '+res.room_number+' · ':'')+( res.date_of_birth?'DOB: '+new Date(res.date_of_birth).toLocaleDateString('en-GB'):'');
+  document.getElementById('res-mgr-sub').textContent=resSub;
+  // Show diagnosis/allergies banner if present
+  const diagBanner=document.getElementById('res-diag-banner');
+  if(diagBanner){
+    if(res.diagnosis||res.allergies){
+      let bannerHtml='';
+      if(res.diagnosis) bannerHtml+='<div style="margin-bottom:4px"><strong>Diagnosis:</strong> '+res.diagnosis+'</div>';
+      if(res.allergies) bannerHtml+='<div style="color:var(--red)"><strong>⚠️ Allergies:</strong> '+res.allergies+'</div>';
+      diagBanner.innerHTML=bannerHtml;
+      diagBanner.style.display='block';
+    } else {
+      diagBanner.style.display='none';
+    }
+  }
+    resTab('meds');showView('resident-mgr');
+  } else {
+    document.getElementById('res-emp-name').textContent=res.first_name+' '+res.last_name;
+    document.getElementById('res-emp-sub').textContent=res.room_number?'Room '+res.room_number:'';
+    document.getElementById('emp-bookin-btn').style.display=me.employee?.medication_trained?'':'none';
+    empResTab('meds');showView('resident-emp');
+  }
+}
+function backToMgr(){showView('manager');mgrTab('residents');}
+function backToEmp(){showView('employee');}
+
+// ── RESIDENT TABS ──
+function resTab(t){
+  ['meds','prn','history'].forEach(x=>{
+    document.getElementById('res-'+x).style.display=x===t?'':'none';
+    document.getElementById('res-tab-'+x).classList.toggle('active',x===t);
+  });
+  if(t==='meds')renderResMeds('mgr','regular');
+  if(t==='prn')renderResMeds('mgr','prn');
+  if(t==='history')renderResHistory();
+}
+function empResTab(t){
+  ['meds','prn'].forEach(x=>{
+    document.getElementById('emp-res-'+x).style.display=x===t?'':'none';
+    document.getElementById('emp-tab-'+x).classList.toggle('active',x===t);
+  });
+  if(t==='meds')renderResMeds('emp','regular');
+  if(t==='prn')renderResMeds('emp','prn');
+}
+
+async function renderResMeds(mode,type){
+  const targetId=mode==='mgr'?'res-meds-content':'emp-res-meds-content';
+  const prnTargetId=mode==='mgr'?'res-prn-content':'emp-res-prn-content';
+  const el=document.getElementById(type==='regular'?targetId:prnTargetId);
+  el.innerHTML='<div class="ldo"><span class="spin"></span> Loading...</div>';
+
+  const {data:meds}=await sb.from('medications').select('*')
+    .eq('resident_id',currentResidentId)
+    .eq('medication_type',type)
+    .eq('is_active',true).order('name');
+
+  if(!meds||!meds.length){
+    el.innerHTML='<div class="empty">No '+(type==='prn'?'PRN ':'')+'medications added yet.'
+      +(mode==='mgr'?' Click &quot;+ Add medication&quot; to add one.':'')+'</div>';
+    return;
+  }
+
+  // Build last 7 days (today first, then going back)
+  const days=[];
+  for(let i=0;i<7;i++){
+    const d=new Date(); d.setDate(d.getDate()-i); d.setHours(0,0,0,0);
+    days.push(d);
+  }
+
+  // Fetch records for last 7 days
+  const d7=new Date(); d7.setDate(d7.getDate()-6); d7.setHours(0,0,0,0);
+  const today=new Date(); today.setHours(0,0,0,0);
+  const {data:recsRaw}=await sb.from('administration_records').select('*')
+    .eq('resident_id',currentResidentId)
+    .gte('scheduled_date',isoDate(d7))
+    .lte('scheduled_date',isoDate(new Date()))
+    .order('administered_at',{ascending:false});
+  const allRecs=recsRaw||[];
+
+  if(type==='regular'){
+    const times=['morning','afternoon','tea-time','night-time'];
+    const icons={morning:'🌅',afternoon:'☀️','tea-time':'🍵','night-time':'🌙'};
+    const labels={morning:'Morning',afternoon:'Afternoon','tea-time':'Tea-time','night-time':'Night-time'};
+
+    let html='';
+    days.forEach((day,dayIdx)=>{
+      const isToday=dayIdx===0;
+      const dateStr=isoDate(day);
+      const dayLabel=isToday?'Today — '+day.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})
+        :day.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short'});
+      const dayRecs=allRecs.filter(r=>r.scheduled_date===dateStr);
+
+      // Count actions for summary
+      let administered=0,refused=0,missed=0,pending=0;
+      let totalExpected=0;
+      times.forEach(time=>{
+        const timeMeds=meds.filter(m=>m.times_of_day&&m.times_of_day.includes(time));
+        timeMeds.forEach(m=>{
+          totalExpected++;
+          const rec=dayRecs.find(r=>r.medication_id===m.id&&r.time_of_day===time);
+          if(!rec) pending++;
+          else if(rec.action==='administered') administered++;
+          else if(rec.action==='refused') refused++;
+          else if(rec.action==='missed') missed++;
+        });
+      });
+      if(totalExpected===0)return;
+
+      const uid='day-'+dateStr.replace(/-/g,'');
+      const summaryBadges=(administered>0?'<span class="badge b-green">'+administered+' given</span>':'')
+        +(refused>0?'<span class="badge b-red">'+refused+' refused</span>':'')
+        +(missed>0?'<span class="badge b-amber">'+missed+' missed</span>':'')
+        +(!isToday&&pending>0?'<span class="badge b-red">'+pending+' unrecorded</span>':'')
+        +(isToday&&pending>0?'<span class="badge b-purple">'+pending+' pending</span>':'');
+
+      let bodyHtml='<div class="day-slate-body'+(isToday?'':' hidden')+'" id="'+uid+'-body">';
+      times.forEach(time=>{
+        const timeMeds=meds.filter(m=>m.times_of_day&&m.times_of_day.includes(time));
+        if(!timeMeds.length)return;
+        const doneCount=timeMeds.filter(m=>dayRecs.some(r=>r.medication_id===m.id&&r.time_of_day===time)).length;
+        bodyHtml+='<div class="time-section" style="margin-bottom:14px">'
+          +'<div class="time-header" style="margin-bottom:8px">'
+          +'<div class="time-icon" style="background:var(--surf2)">'+icons[time]+'</div>'
+          +'<div class="time-title">'+labels[time]+'</div>'
+          +'<span class="badge '+(doneCount===timeMeds.length?'b-green':'b-amber')+'" style="margin-left:auto">'+doneCount+'/'+timeMeds.length+' done</span>'
+          +'</div>';
+        timeMeds.forEach(m=>{bodyHtml+=medCardDay(m,dayRecs,time,mode,dateStr,isToday);});
+        bodyHtml+='</div>';
+      });
+      bodyHtml+='</div>';
+
+      const todayCls=isToday?' today':'';
+      html+='<div class="day-slate">'
+        +'<div class="day-slate-header'+todayCls+'" data-uid="'+uid+'" onclick="toggleDaySlate(this.dataset.uid)">'
+        +'<div class="day-slate-title'+todayCls+'">'+dayLabel+'</div>'
+        +'<div class="day-slate-summary">'+summaryBadges
+        +'<span id="'+uid+'-arr" style="font-size:11px;color:var(--txt3);margin-left:4px">'+(isToday?'▲':'▼')+'</span>'
+        +'</div></div>'
+        +bodyHtml
+        +'</div>';
+    });
+    el.innerHTML=html||'<div class="empty">No medications scheduled.</div>';
+
+  } else {
+    // PRN — show today + recent records
+    const todayStr=isoDate(today);
+    const todayRecs=allRecs.filter(r=>r.scheduled_date===todayStr);
+    el.innerHTML=meds.map(m=>prnCard(m,todayRecs,mode)).join('');
+  }
+}
+
+function isoDate(d){return d.toISOString().slice(0,10);}
+
+function toggleDaySlate(uid){
+  const body=document.getElementById(uid+'-body');
+  const arr=document.getElementById(uid+'-arr');
+  if(!body)return;
+  const isHidden=body.classList.contains('hidden');
+  body.classList.toggle('hidden',!isHidden);
+  if(arr)arr.textContent=isHidden?'▲':'▼';
+}
+
+function toggleTimeSection(el_or_uid){
+  const uid=typeof el_or_uid==='string'?el_or_uid:el_or_uid.dataset?.uid||el_or_uid;
+  const el=document.getElementById(uid);
+  const arrow=document.getElementById(uid+'-arrow');
+  if(!el)return;
+  const isOpen=el.style.display!=='none';
+  el.style.display=isOpen?'none':'block';
+  if(arrow)arrow.textContent=isOpen?'▼':'▲';
+}
+
+
+function medCardDay(m,dayRecs,time,mode,dateStr,isToday){
+  const rec=dayRecs.find(r=>r.medication_id===m.id&&r.time_of_day===time);
+  const qty=m.qty_per_dose||1;
+  const dailyTotal=(m.daily_dose_count||1)*qty;
+  const daysLeft=dailyTotal>0?Math.floor(m.current_stock/dailyTotal):null;
+  const canAct=mode==='emp'&&me.employee?.medication_trained;
+
+  let actionHtml='';
+  if(rec){
+    // Already actioned — show coloured state button (non-clickable)
+    const cls=rec.action==='administered'?'btn-administered':rec.action==='refused'?'btn-refused':'btn-missed';
+    const icon=rec.action==='administered'?'✅':rec.action==='refused'?'❌':'⚠️';
+    const t=new Date(rec.administered_at).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    actionHtml='<button class="btn btn-sm '+cls+'" disabled>'
+      +icon+' '+rec.action.charAt(0).toUpperCase()+rec.action.slice(1)+'</button>'
+      +'<div class="action-stamp">'+t+' by '+rec.administered_by_name+'</div>';
+  } else if(canAct||mode==='mgr'){
+    if(m.current_stock<=0){
+      actionHtml='<span class="badge b-red">Out of stock</span>';
+    } else if(mode==='mgr'){
+      // Manager sees state but cannot administer - just shows pending
+      actionHtml='<span class="badge b-gray">Awaiting staff</span>';
+    } else {
+      // Trained employee - show action buttons
+      actionHtml='<button class="btn btn-sm btn-pending" '
+        +'data-mid="'+m.id+'" data-time="'+time+'" '
+        +'data-name="'+encodeURIComponent(m.name)+'" '
+        +'data-dose="'+encodeURIComponent(m.dose)+'" '
+        +'data-stock="'+m.current_stock+'" '
+        +'data-date="'+dateStr+'" '
+        +'onclick="openAdministerFromBtn(this)">Record administration</button>';
+    }
+  } else {
+    actionHtml='<span class="badge b-gray">Medication training required</span>';
+  }
+
+  const windowInfo=m.time_windows&&m.time_windows[time]
+    ?'<div class="med-meta-item" style="color:var(--blue)">⏰ '+m.time_windows[time].from+' – '+m.time_windows[time].to+'</div>':'';
+
+  const editBtns=mode==='mgr'
+    ?'<div style="display:flex;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid var(--bdr)">'      +'<button class="btn btn-out btn-xs" onclick="editMedication(\''+m.id+'\')">Edit</button>'      +'<button class="btn btn-red btn-xs" onclick="deleteMedication(\''+m.id+'\',\''+encodeURIComponent(m.name)+'\')">Delete</button>'      +'</div>':'';
+  return '<div class="med-card'+(rec?' '+rec.action:'')+'">'
+    +'<div class="med-name">'+m.name+'</div>'
+    +'<div class="med-dose">'+m.dose
+    +(m.route?' <span style="background:var(--bbg);color:var(--blue);padding:1px 7px;border-radius:999px;font-size:11px;font-weight:500">'+m.route+'</span>':'')
+    +(m.instructions?' <span style="color:var(--txt3)">· '+m.instructions+'</span>':'')
+    +'</div>'
+    +'<div class="med-meta">'
+    +windowInfo
+    +'<div class="med-meta-item">📦 Stock: <strong>'+m.current_stock+' '+m.stock_unit+'</strong>'
+    +(daysLeft!==null?' · <span style="color:'+(daysLeft<=10?'var(--red)':'var(--txt3)')+'">≈'+daysLeft+' days left</span>':'')+'</div>'
+    +(m.qty_per_dose>1?'<div class="med-meta-item">💊 '+m.qty_per_dose+' '+m.stock_unit+' per dose</div>':'')
+    +(m.current_stock<=0?'<span class="badge b-red">OUT OF STOCK</span>':daysLeft!==null&&daysLeft<=10?'<span class="badge b-amber">⚠️ Low stock</span>':'')
+    +'</div>'
+    +'<div class="med-actions" style="margin-top:8px">'+actionHtml+'</div>'
+    +editBtns
+    +'</div>';
+}
+
+function medCard(m,recs,time,mode){
+  const rec=(recs||[]).find(r=>r.medication_id===m.id&&r.time_of_day===time);
+  const qty=m.qty_per_dose||1;
+  const dailyTotal=(m.daily_dose_count||1)*qty;
+  const daysLeft=dailyTotal>0?Math.floor(m.current_stock/dailyTotal):null;
+  const stockPct=Math.min(100,daysLeft!==null?(daysLeft/30)*100:100);
+  const stockClass=daysLeft!==null?(daysLeft<=3?'low':daysLeft<=10?'warn':''):'';
+  const canAct=mode==='emp'&&me.employee?.medication_trained;
+  let actBtns='';
+  if(rec){
+    actBtns='<span class="badge '+(rec.action==='administered'?'b-green':rec.action==='refused'?'b-red':'b-amber')+'">'
+      +(rec.action==='administered'?'✅':'❌')+' '+rec.action+' at '
+      +new Date(rec.administered_at).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})
+      +' by '+rec.administered_by_name+'</span>';
+  } else if(canAct){
+    actBtns='<button class="btn btn-dark btn-sm" data-mid="'+m.id+'" data-time="'+time+'" data-name="'+encodeURIComponent(m.name)+'" data-dose="'+encodeURIComponent(m.dose)+'" data-stock="'+m.current_stock+'" onclick="openAdministerFromBtn(this)">Record administration</button>';
+  } else if(mode==='mgr'){
+    actBtns='<span class="badge b-gray">Only trained staff can administer</span>';
+  } else {
+    actBtns='<span class="badge b-gray">Medication training required</span>';
+  }
+  return '<div class="med-card '+(rec?rec.action:'')+'">'
+    +'<div class="med-name">'+m.name+'</div>'
+    +'<div class="med-dose">'+m.dose
+    +(m.route?' <span style="background:var(--bbg);color:var(--blue);padding:1px 7px;border-radius:999px;font-size:11px;font-weight:500">'+m.route+'</span>':'')
+    +(m.instructions?' <span style="color:var(--txt3)">· '+m.instructions+'</span>':'')+'</div>'
+    +'<div class="med-meta">'
+    +(m.time_windows&&m.time_windows[time]?'<div class="med-meta-item" style="color:var(--blue)">⏰ Window: '+m.time_windows[time].from+' – '+m.time_windows[time].to+'</div>':'')
+    +'<div class="med-meta-item">📦 Stock: <strong>'+m.current_stock+' '+m.stock_unit+'</strong>'+(daysLeft!==null?' · <span style="color:'+(daysLeft<=10?'var(--red)':'var(--txt3)')+'">≈'+daysLeft+' days left</span>':'')+'</div>'
+    +(m.qty_per_dose>1?'<div class="med-meta-item">💊 '+m.qty_per_dose+' '+m.stock_unit+' per dose</div>':'')
+    +(m.current_stock<=0?'<span class="badge b-red">OUT OF STOCK</span>':daysLeft!==null&&daysLeft<=10?'<span class="badge b-amber">⚠️ Low stock</span>':'')
+    +'</div>'
+    +'<div class="stock-bar"><div class="stock-fill '+stockClass+'" style="width:'+stockPct+'%"></div></div>'
+    +'<div class="med-actions" style="margin-top:10px">'+actBtns+'</div>'
+    +'</div>';
+}
+
+function prnCard(m,recs,mode){
+  const lastRec=recs.filter(r=>r.medication_id===m.id).sort((a,b)=>new Date(b.administered_at)-new Date(a.administered_at))[0];
+  const canAct=mode==='emp'&&me.employee?.medication_trained;
+  let gapOk=true;
+  if(lastRec&&m.prn_min_gap_hours){
+    const hoursSince=(Date.now()-new Date(lastRec.administered_at))/(1000*3600);
+    gapOk=hoursSince>=m.prn_min_gap_hours;
+  }
+  const actBtn=canAct?(gapOk?`<button class="btn btn-dark btn-sm" onclick="openAdminister('${m.id}','prn','${encodeURIComponent(m.name)}','${encodeURIComponent(m.dose)}',${m.current_stock})">Administer PRN</button>`:`<span class="badge b-amber">⏱ Min gap: ${m.prn_min_gap_hours}h. Last given: ${new Date(lastRec.administered_at).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</span>`):'<span class="badge b-gray">Awaiting trained staff</span>';
+  return `<div class="med-card">
+    <div class="med-name">${m.name} <span class="badge b-purple" style="margin-left:6px">PRN</span></div>
+    <div class="med-dose">${m.dose}${m.route?' · <span style="background:var(--bbg);color:var(--blue);padding:1px 7px;border-radius:999px;font-size:11px;font-weight:500">'+m.route+'</span>':''} ${m.instructions?'<span style="color:var(--txt3)">· '+m.instructions+'</span>':''}</div>
+    <div class="med-meta">
+      <div class="med-meta-item">📦 Stock: <strong>${m.current_stock} ${m.stock_unit}</strong></div>
+      <div class="med-meta-item">⏱ Min gap: ${m.prn_min_gap_hours}h</div>
+      ${lastRec?`<div class="med-meta-item">Last given: ${new Date(lastRec.administered_at).toLocaleString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</div>`:''}
+    </div>
+    <div class="med-actions" style="margin-top:10px">${actBtn}</div>
+  </div>`;
+}
+
+async function renderResHistory(){
+  const {data:recs}=await sb.from('administration_records').select('*').eq('resident_id',currentResidentId).order('administered_at',{ascending:false}).limit(100);
+  if(!recs.length){document.getElementById('res-hist-tbl').innerHTML='<div class="empty">No records yet.</div>';return;}
+  const {data:meds}=await sb.from('medications').select('id,name').eq('resident_id',currentResidentId);
+  const medMap=Object.fromEntries(meds.map(m=>[m.id,m.name]));
+  const rows=recs.map(r=>`<tr>
+    <td>${new Date(r.administered_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</td>
+    <td>${new Date(r.administered_at).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</td>
+    <td><strong>${medMap[r.medication_id]||'Unknown'}</strong></td>
+    <td>${r.time_of_day}</td>
+    <td><span class="badge ${r.action==='administered'?'b-green':r.action==='refused'?'b-red':'b-amber'}">${r.action}</span></td>
+    <td>${r.administered_by_name}</td>
+    <td>${r.comment||'—'}</td>
+    <td>${r.stock_before??'—'} → ${r.stock_after??'—'}</td>
+  </tr>`).join('');
+  document.getElementById('res-hist-tbl').innerHTML=`<table><thead><tr><th>Date</th><th>Time</th><th>Medication</th><th>Period</th><th>Action</th><th>By</th><th>Comment</th><th>Stock</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+// ── ADMINISTER ──
+function openAdministerFromBtn(btn){
+  const medId=btn.dataset.mid;
+  const time=btn.dataset.time;
+  const nameEnc=btn.dataset.name;
+  const doseEnc=btn.dataset.dose;
+  const stock=parseFloat(btn.dataset.stock)||0;
+  openAdminister(medId,time,nameEnc,doseEnc,stock);
+}
+
+function openAdministerFromBtn(btn){
+  const medId=btn.dataset.mid;
+  const time=btn.dataset.time;
+  const name=decodeURIComponent(btn.dataset.name||'');
+  const dose=decodeURIComponent(btn.dataset.dose||'');
+  const stock=parseFloat(btn.dataset.stock)||0;
+  const dateStr=btn.dataset.date||new Date().toISOString().slice(0,10);
+  openAdminister(medId,time,name,dose,stock,dateStr);
+}
+function openAdminister(medId,time,nameEnc,doseEnc,stock,dateStr){const name=decodeURIComponent(nameEnc||medId),dose=decodeURIComponent(doseEnc||'');currentAdmDate=dateStr||new Date().toISOString().slice(0,10);
+  if(stock<=0){showAlert('📦','Out of stock',`${name} has no stock remaining. Please book in more before administering.`);return;}
+  currentMedId=medId; currentAdmTime=time;
+  document.getElementById('adm-title').textContent=`${name} — ${time.charAt(0).toUpperCase()+time.slice(1)}`;
+  document.getElementById('adm-med-info').innerHTML=`<strong>${name}</strong> · ${dose}<br><span style="color:var(--txt3)">Current stock: ${stock} units</span>`;
+  document.getElementById('adm-action').value='administered';
+  document.getElementById('adm-comment').value='';
+  openModal('mo-administer');
+}
+async function saveAdminister(){
+  const action=document.getElementById('adm-action').value;
+  const comment=document.getElementById('adm-comment').value.trim();
+  const today=currentAdmDate||new Date().toISOString().slice(0,10);
+  // Check duplicate
+  if(action==='administered'&&me.role==='employee'){
+    const {data:exist}=await sb.from('administration_records').select('id').eq('medication_id',currentMedId).eq('time_of_day',currentAdmTime).eq('scheduled_date',today).eq('action','administered');
+    if(exist&&exist.length>0){
+      closeModal('mo-administer');
+      showAlert('⚠️','Already administered',`This medication has already been recorded as administered for this time period today. Please check with your manager.`);
+      return;
+    }
+  }
+  const {data:med}=await sb.from('medications').select('*').eq('id',currentMedId).single();
+  const stockBefore=med.current_stock;
+  const qtyPerDose=med.qty_per_dose||1;
+  const stockAfter=action==='administered'?Math.max(0,stockBefore-qtyPerDose):stockBefore;
+  const byName=me.role==='manager'?`${me.manager.first_name} ${me.manager.last_name}`:`${me.employee.first_name} ${me.employee.last_name}`;
+  const byId=me.role==='manager'?me.manager.id:me.employee.id;
+  const btn=document.getElementById('adm-btn');btn.disabled=true;btn.textContent='Saving...';
+  await sb.from('administration_records').insert({medication_id:currentMedId,resident_id:currentResidentId,home_id:me.home.id,company_id:me.home?.company_id||me.manager?.company_id||me.employee?.company_id||'',time_of_day:currentAdmTime,action,comment,administered_by_type:me.role,administered_by_id:byId,administered_by_name:byName,stock_before:stockBefore,stock_after:stockAfter,scheduled_date:today});
+  if(action==='administered'){
+    await sb.from('medications').update({current_stock:stockAfter}).eq('id',currentMedId);
+    // Check low stock
+    const qtyPer=med.qty_per_dose||1;
+  const dailyTotalAmt=(med.daily_dose_count||1)*qtyPer;
+  const daysLeft=dailyTotalAmt>0?Math.floor(stockAfter/dailyTotalAmt):null;
+    if(daysLeft!==null&&daysLeft<=10){
+      // Get resident name for alert
+      const {data:resForAlert}=await sb.from('residents').select('first_name,last_name').eq('id',currentResidentId).single();
+      const resName=resForAlert?resForAlert.first_name+' '+resForAlert.last_name:'Unknown resident';
+      await createNotif('low_stock',`⚠️ Low stock: ${med.name} (${resName})`,`Only ${daysLeft} days of ${med.name} remaining for ${resName}. Current stock: ${stockAfter} ${med.stock_unit}.`,currentResidentId,currentMedId);
+      if(med.notification_emails&&med.notification_emails.length>0){
+        for(const email of med.notification_emails){
+          await sendEmail(email,`⚠️ Low Stock Alert — ${resName}`,`Low medication stock alert.
+
+Resident: ${resName}
+Medication: ${med.name}
+Route: ${med.route||'oral'}
+Dose: ${med.dose}
+Current stock: ${stockAfter} ${med.stock_unit}
+Estimated days remaining: ${daysLeft}
+
+Please arrange a new prescription urgently.`);
+        }
+      }
+    }
+  }
+  btn.disabled=false;btn.textContent='Save record';
+  closeModal('mo-administer');toast('Record saved','ok');
+  if(me.role==='manager'){await renderResMeds('mgr',currentAdmTime==='prn'?'prn':'regular');}
+  else{await renderResMeds('emp',currentAdmTime==='prn'?'prn':'regular');}
+}
+
+// ── ADD MEDICATION ──
+function openAddMed(){
+  ['med-name','med-dose','med-instructions','med-notif-email-input'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('med-stock').value='0';
+  document.getElementById('med-daily').value='1';
+  document.getElementById('med-type').value='regular';
+  document.getElementById('med-route').value='oral';toggleRouteOther();
+  if(document.getElementById('med-qty-dose')) document.getElementById('med-qty-dose').value='1';
+  updateDosePreview();
+  document.getElementById('med-route-other').value='';
+  document.getElementById('med-route-other-fg').style.display='none';
+  document.getElementById('med-unit').value='tablets';
+  document.getElementById('med-prn-gap').value='4';
+  document.querySelectorAll('#med-times-group .cb-opt').forEach(o=>{
+    o.classList.remove('selected');
+    const cb=o.querySelector('input');if(cb)cb.checked=false;
+  });
+  ['mw-morning','mw-afternoon','mw-teatime','mw-nighttime'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.style.display='none';
+  });
+  ['mw-morning-from','mw-morning-to','mw-afternoon-from','mw-afternoon-to',
+   'mw-teatime-from','mw-teatime-to','mw-nighttime-from','mw-nighttime-to'
+  ].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  medNotifEmails=[];
+  document.getElementById('med-notif-emails').innerHTML='';
+  document.getElementById('med-modal-title').textContent='Add medication';
+  document.getElementById('med-save-btn').textContent='Add medication';
+  toggleMedType();
+  openModal('mo-medication');
+}
+function toggleMedType(){
+  const isPrn=document.getElementById('med-type').value==='prn';
+  document.getElementById('med-times-fg').style.display=isPrn?'none':'';
+  document.getElementById('med-windows-fg').style.display=isPrn?'none':'';
+  document.getElementById('med-prn-fg').style.display=isPrn?'':'none';
+}
+function toggleRouteOther(){
+  const isOther=document.getElementById('med-route').value==='other';
+  document.getElementById('med-route-other-fg').style.display=isOther?'':'none';
+  if(!isOther) document.getElementById('med-route-other').value='';
+  // Auto-suggest stock unit based on route
+  const routeUnitMap={
+    'oral':'tablets',
+    'topical':'grams',
+    'transdermal':'patches',
+    'inhaled':'puffs',
+    'sublingual':'tablets',
+    'rectal':'suppositories',
+    'eye-drops':'drops',
+    'ear-drops':'drops',
+    'nasal':'sprays',
+    'injection':'units',
+    'iv':'ml',
+    'other':'units'
+  };
+  const route=document.getElementById('med-route').value;
+  const unitEl=document.getElementById('med-unit');
+  if(unitEl&&routeUnitMap[route]){
+    unitEl.value=routeUnitMap[route];
+    unitEl.style.background='var(--gbg)';
+    unitEl.title='Auto-suggested based on route — you can change this';
+    setTimeout(()=>{if(unitEl)unitEl.style.background='';},2000);
+  }
+}
+function updateDosePreview(){
+  const qty=parseInt(document.getElementById('med-qty-dose')?.value)||1;
+  const el=document.getElementById('dose-preview');
+  if(el) el.textContent=qty;
+}
+function toggleTime(el,val){
+  el.classList.toggle('selected');
+  const cb=el.querySelector('input[type="checkbox"]');
+  if(cb) cb.checked=el.classList.contains('selected');
+  // Show/hide corresponding time window
+  const winMap={'morning':'mw-morning','afternoon':'mw-afternoon','tea-time':'mw-teatime','night-time':'mw-nighttime'};
+  const winEl=document.getElementById(winMap[val]);
+  if(winEl) winEl.style.display=el.classList.contains('selected')?'block':'none';
+}
+function addNotifEmail(e){
+  if(e.key!=='Enter')return;
+  const val=document.getElementById('med-notif-email-input').value.trim();
+  if(!val||!val.includes('@'))return;
+  if(medNotifEmails.includes(val))return;
+  medNotifEmails.push(val);
+  document.getElementById('med-notif-email-input').value='';
+  renderNotifEmails();
+}
+function removeNotifEmail(i){medNotifEmails.splice(i,1);renderNotifEmails();}
+function renderNotifEmails(){
+  document.getElementById('med-notif-emails').innerHTML=medNotifEmails.map((e,i)=>`<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;background:var(--bbg);border-radius:999px;font-size:12px;color:var(--blue)">${e}<button onclick="removeNotifEmail(${i})" style="background:none;border:none;cursor:pointer;color:var(--blue);padding:0;font-size:14px;line-height:1">×</button></span>`).join('');
+}
+async function saveMedication(){
+  const name=document.getElementById('med-name').value.trim();
+  const dose=document.getElementById('med-dose').value.trim();
+  const type=document.getElementById('med-type').value;
+  if(!name||!dose){toast('Name and dose required','err');return;}
+  const times=type==='regular'?[...document.querySelectorAll('#med-times-group .cb-opt.selected')].map(o=>o.dataset.val||o.querySelector('input').value):[];
+  if(type==='regular'&&!times.length){toast('Select at least one time of day','err');return;}
+  const btn=document.getElementById('med-save-btn');btn.disabled=true;btn.textContent='Saving...';
+  const routeVal=document.getElementById('med-route').value;
+  const routeOther=document.getElementById('med-route-other').value.trim();
+  const finalRoute=routeVal==='other'&&routeOther?routeOther:routeVal;
+  // Collect time windows
+  const timeWindows={};
+  const winMap2={'morning':'mw-morning','afternoon':'mw-afternoon','tea-time':'mw-teatime','night-time':'mw-nighttime'};
+  for(const [t,id] of Object.entries(winMap2)){
+    const f=document.getElementById(id+'-from')?.value;
+    const to=document.getElementById(id+'-to')?.value;
+    if(f||to) timeWindows[t]={from:f||'',to:to||''};
+  }
+  const {error:medErr}=await sb.from('medications').insert({resident_id:currentResidentId,home_id:me.home.id,company_id:me.manager?.company_id||me.home?.company_id||'',name,dose,route:finalRoute,medication_type:type,times_of_day:times,instructions:document.getElementById('med-instructions').value.trim(),prn_min_gap_hours:parseFloat(document.getElementById('med-prn-gap').value)||4,current_stock:parseFloat(document.getElementById('med-stock').value)||0,stock_unit:document.getElementById('med-unit').value||'tablets',daily_dose_count:parseInt(document.getElementById('med-daily').value)||1,qty_per_dose:parseInt(document.getElementById('med-qty-dose').value)||1,time_windows:Object.keys(timeWindows).length>0?timeWindows:null,notification_emails:medNotifEmails});
+  btn.disabled=false;btn.textContent='Add medication';
+  if(medErr){toast('Error saving medication: '+medErr.message,'err');return;}
+  closeModal('mo-medication');toast('Medication added','ok');
+  resTab(type==='prn'?'prn':'meds');
+}
+
+// ── BOOK IN STOCK ──
+async function openBookIn(){
+  const {data:meds}=await sb.from('medications').select('*').eq('resident_id',currentResidentId).eq('is_active',true).order('name');
+  const sel=document.getElementById('bookin-med-sel');
+  if(!meds||!meds.length){toast('No medications added for this resident yet','err');return;}
+  sel.innerHTML=meds.map(m=>`<option value="${m.id}" data-stock="${m.current_stock}" data-unit="${m.stock_unit}">${m.name} (${m.current_stock} ${m.stock_unit})</option>`).join('');
+  updateBookInAfter();
+  document.getElementById('bookin-qty').value='';
+  document.getElementById('bookin-notes').value='';
+  document.getElementById('bookin-after').textContent='—';
+  sel.onchange=updateBookInAfter;
+  document.getElementById('bookin-qty').oninput=updateBookInAfter;
+  document.getElementById('bookin-witness').value='';
+  document.getElementById('bookin-witness-id').value='';
+  openModal('mo-bookin');
+}
+function updateBookInAfter(){
+  const sel=document.getElementById('bookin-med-sel');
+  const opt=sel.options[sel.selectedIndex];
+  const cur=parseFloat(opt.dataset.stock)||0;
+  const qty=parseFloat(document.getElementById('bookin-qty').value)||0;
+  document.getElementById('bookin-after').textContent=(cur+qty)+' '+(opt.dataset.unit||'');
+}
+async function saveBookIn(){
+  const sel=document.getElementById('bookin-med-sel');
+  const medId=sel.value;
+  const qty=parseFloat(document.getElementById('bookin-qty').value);
+  const witness=document.getElementById('bookin-witness').value.trim();
+  const witnessId=document.getElementById('bookin-witness-id').value.trim();
+  if(!qty||qty<=0){toast('Enter a valid quantity','err');return;}
+  if(!witness){toast('Witness name required — a second person must countersign','err');return;}
+  if(!witnessId){toast('Witness staff number required','err');return;}
+  const {data:med}=await sb.from('medications').select('*').eq('id',medId).single();
+  const newStock=med.current_stock+qty;
+  const byName=me.role==='manager'?`${me.manager.first_name} ${me.manager.last_name}`:`${me.employee.first_name} ${me.employee.last_name}`;
+  const byId=me.role==='manager'?me.manager.id:me.employee.id;
+  const notes=document.getElementById('bookin-notes').value.trim();
+  const fullNotes=notes?notes+' | Witnessed by: '+witness+' ('+witnessId+')'
+    :'Witnessed by: '+witness+' ('+witnessId+')';
+  const btn=document.getElementById('bookin-btn');btn.disabled=true;btn.textContent='Saving...';
+  await sb.from('medications').update({current_stock:newStock}).eq('id',medId);
+  const {error}=await sb.from('stock_bookings').insert({
+    medication_id:medId,resident_id:currentResidentId,home_id:me.home.id,
+    company_id:med.company_id||me.home?.company_id||'',
+    quantity_added:qty,booked_by_type:me.role,booked_by_id:byId,
+    booked_by_name:byName,notes:fullNotes
+  });
+  btn.disabled=false;btn.textContent='Book in stock';
+  if(error){toast('Error: '+error.message,'err');return;}
+  closeModal('mo-bookin');
+  toast(med.name+' stock updated to '+newStock+' '+med.stock_unit,'ok');
+  if(me.role==='manager')resTab('meds');else empResTab('meds');
+}
+
+// ── EMPLOYEES (Manager) ──
+async function renderEmployees(){
+  const {data:emps}=await sb.from('employees').select('*').eq('home_id',me.home.id).order('first_name');
+  if(!emps.length){document.getElementById('emp-tbl').innerHTML='<div class="empty">No employees yet.</div>';return;}
+  const rows=emps.map(e=>`<tr>
+    <td><strong>${e.first_name} ${e.last_name}</strong></td>
+    <td>${e.staff_number}</td>
+    <td><code style="background:var(--surf2);padding:2px 6px;border-radius:4px;font-size:12px">${e.user_id}</code></td>
+    <td><span class="badge ${e.employment_type==='permanent'?'b-blue':'b-amber'}">${e.employment_type}</span></td>
+    <td><span class="badge ${e.medication_trained?'b-green':'b-gray'}">${e.medication_trained?'Trained':'Not trained'}</span></td>
+    <td><span class="badge ${e.is_active?'b-green':'b-red'}">${e.is_active?'Active':'Inactive'}</span></td>
+    <td style="white-space:nowrap">
+      <button class="btn btn-out btn-xs" onclick="toggleEmpActive('${e.id}',${e.is_active})">${e.is_active?'Deactivate':'Activate'}</button>
+      <button class="btn btn-red btn-xs" style="margin-left:4px" onclick="deleteEmployee('${e.id}')">Delete</button>
+    </td></tr>`).join('');
+  document.getElementById('emp-tbl').innerHTML=`<table><thead><tr><th>Name</th><th>Staff no.</th><th>User ID</th><th>Type</th><th>Med trained</th><th>Status</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+function openAddEmployee(){
+  ['emp-first','emp-last','emp-staffno','emp-userid','emp-pw'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('emp-type').value='permanent';
+  document.getElementById('emp-trained').value='false';
+  document.getElementById('emp-modal-title').textContent='Add employee';
+  document.getElementById('emp-save-btn').textContent='Add employee';
+  openModal('mo-employee');
+}
+async function saveEmployee(){
+  const first=document.getElementById('emp-first').value.trim();
+  const last=document.getElementById('emp-last').value.trim();
+  const staffNo=document.getElementById('emp-staffno').value.trim();
+  const userId=document.getElementById('emp-userid').value.trim();
+  const pw=document.getElementById('emp-pw').value;
+  const type=document.getElementById('emp-type').value;
+  const trained=document.getElementById('emp-trained').value==='true';
+  if(!first||!last||!staffNo||!userId||!pw){toast('Fill all fields','err');return;}
+  const btn=document.getElementById('emp-save-btn');btn.disabled=true;btn.textContent='Saving...';
+  const {error:empErr}=await sb.from('employees').insert({home_id:me.home.id,company_id:me.manager?.company_id||me.home?.company_id||'',first_name:first,last_name:last,staff_number:staffNo,user_id:userId,password:await hashPassword(pw),employment_type:type,medication_trained:trained,must_change_password:true});
+  btn.disabled=false;btn.textContent='Add employee';
+  if(empErr){toast('Error: '+empErr.message,'err');return;}
+  closeModal('mo-employee');toast('Employee added','ok');renderEmployees();
+}
+async function toggleEmpActive(id,current){
+  await sb.from('employees').update({is_active:!current}).eq('id',id);
+  toast(current?'Employee deactivated':'Employee activated','ok');renderEmployees();
+}
+async function deleteEmployee(id){
+  if(!confirm('Delete this employee?'))return;
+  await sb.from('employees').delete().eq('id',id);
+  toast('Employee deleted','ok');renderEmployees();
+}
+
+// ── AUDIT LOG ──
+async function renderLogs(){
+  const {data:residents}=await sb.from('residents').select('id,first_name,last_name').eq('home_id',me.home.id).order('first_name');
+  const {data:meds}=await sb.from('medications').select('id,name').eq('home_id',me.home.id);
+  const resMap=Object.fromEntries((residents||[]).map(r=>[r.id,r.first_name+' '+r.last_name]));
+  const medMap=Object.fromEntries((meds||[]).map(m=>[m.id,m.name]));
+  // Populate resident filter
+  const filterSel=document.getElementById('log-filter-resident');
+  if(filterSel&&filterSel.options.length<=1){
+    (residents||[]).forEach(r=>{
+      const opt=document.createElement('option');
+      opt.value=r.id;opt.textContent=r.first_name+' '+r.last_name;
+      filterSel.appendChild(opt);
+    });
+  }
+  const filterRes=filterSel?.value||'';
+  let q=sb.from('administration_records').select('*').eq('home_id',me.home.id).order('administered_at',{ascending:false}).limit(500);
+  if(filterRes) q=q.eq('resident_id',filterRes);
+  const {data:recs}=await q;
+  if(!recs||!recs.length){document.getElementById('logs-tbl').innerHTML='<div class="empty">No records yet.</div>';return;}
+  const rows=recs.map(r=>`<tr>
+    <td>${new Date(r.administered_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</td>
+    <td>${new Date(r.administered_at).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</td>
+    <td><strong>${resMap[r.resident_id]||'—'}</strong></td>
+    <td>${medMap[r.medication_id]||'—'}</td>
+    <td>${r.time_of_day||'—'}</td>
+    <td><span class="badge ${r.action==='administered'?'b-green':r.action==='refused'?'b-red':'b-amber'}">${r.action}</span></td>
+    <td>${r.administered_by_name}</td>
+    <td>${r.stock_before??'—'} → ${r.stock_after??'—'}</td>
+    <td class="hm">${r.comment||'—'}</td>
+  </tr>`).join('');
+  document.getElementById('logs-tbl').innerHTML=`<table><thead><tr><th>Date</th><th>Time</th><th>Resident</th><th>Medication</th><th>Period</th><th>Action</th><th>By</th><th>Stock</th><th class="hm">Comment</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+// ── EDIT / DELETE MEDICATION ──
+let editingMedId=null;
+let editMedNotifEmails=[];
+
+async function editMedication(id){
+  const {data:m}=await sb.from('medications').select('*').eq('id',id).single();
+  if(!m){toast('Medication not found','err');return;}
+  editingMedId=id;
+  document.getElementById('edit-med-name').value=m.name||'';
+  document.getElementById('edit-med-dose').value=m.dose||'';
+  document.getElementById('edit-med-route').value=m.route||'oral';
+  document.getElementById('edit-med-qty').value=m.qty_per_dose||1;
+  document.getElementById('edit-med-daily').value=m.daily_dose_count||1;
+  document.getElementById('edit-med-instructions').value=m.instructions||'';
+  editMedNotifEmails=[...(m.notification_emails||[])];
+  renderEditMedEmails();
+  openModal('mo-edit-med');
+}
+function addEditEmail(e){
+  if(e.key!=='Enter')return;
+  const val=document.getElementById('edit-med-email-input').value.trim();
+  if(!val||!val.includes('@'))return;
+  if(!editMedNotifEmails.includes(val)) editMedNotifEmails.push(val);
+  document.getElementById('edit-med-email-input').value='';
+  renderEditMedEmails();
+}
+function renderEditMedEmails(){
+  document.getElementById('edit-med-emails').innerHTML=editMedNotifEmails.map((e,i)=>
+    '<span style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;background:var(--bbg);border-radius:999px;font-size:11px;color:var(--blue);margin:2px">'+e
+    +'<button onclick="editMedNotifEmails.splice('+i+',1);renderEditMedEmails()" style="background:none;border:none;cursor:pointer;color:var(--blue);padding:0;font-size:13px">×</button></span>'
+  ).join('');
+}
+async function saveEditMedication(){
+  const name=document.getElementById('edit-med-name').value.trim();
+  const dose=document.getElementById('edit-med-dose').value.trim();
+  if(!name||!dose){toast('Name and dose required','err');return;}
+  const {error}=await sb.from('medications').update({
+    name, dose,
+    route:document.getElementById('edit-med-route').value,
+    qty_per_dose:parseInt(document.getElementById('edit-med-qty').value)||1,
+    daily_dose_count:parseInt(document.getElementById('edit-med-daily').value)||1,
+    instructions:document.getElementById('edit-med-instructions').value.trim(),
+    notification_emails:editMedNotifEmails
+  }).eq('id',editingMedId);
+  if(error){toast('Error: '+error.message,'err');return;}
+  toast('Medication updated','ok');
+  closeModal('mo-edit-med');
+  // Refresh current view
+  if(document.getElementById('res-meds').style.display!=='none') resTab('meds');
+  else if(document.getElementById('res-prn').style.display!=='none') resTab('prn');
+}
+async function deleteMedication(id,nameEnc){
+  const name=decodeURIComponent(nameEnc);
+  if(!confirm('Delete '+name+'? This removes the medication and cannot be undone.'))return;
+  const {error}=await sb.from('medications').update({is_active:false}).eq('id',id);
+  if(error){toast('Error: '+error.message,'err');return;}
+  toast(name+' removed','ok');
+  if(document.getElementById('res-meds').style.display!=='none') resTab('meds');
+  else if(document.getElementById('res-prn').style.display!=='none') resTab('prn');
+}
+async function exportAuditCSV(){
+  const filterRes=document.getElementById('log-filter-resident')?.value||'';
+  let q=sb.from('administration_records').select('*').eq('home_id',me.home.id).order('administered_at',{ascending:false});
+  if(filterRes) q=q.eq('resident_id',filterRes);
+  const {data:recs}=await q;
+  if(!recs||!recs.length){toast('No records to export','err');return;}
+  const {data:residents}=await sb.from('residents').select('id,first_name,last_name').eq('home_id',me.home.id);
+  const {data:meds}=await sb.from('medications').select('id,name,dose,route').eq('home_id',me.home.id);
+  const resMap=Object.fromEntries((residents||[]).map(r=>[r.id,r.first_name+' '+r.last_name]));
+  const medMap=Object.fromEntries((meds||[]).map(m=>[m.id,{name:m.name,dose:m.dose,route:m.route||'oral'}]));
+  let csv='Date,Time,Resident,Medication,Dose,Route,Period,Action,Administered By,Stock Before,Stock After,Comment\n';
+  recs.forEach(r=>{
+    const med=medMap[r.medication_id]||{name:'Unknown',dose:'',route:''};
+    const dt=new Date(r.administered_at);
+    const row=[
+      dt.toLocaleDateString('en-GB'),
+      dt.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),
+      resMap[r.resident_id]||'',
+      med.name, med.dose, med.route,
+      r.time_of_day||'', r.action,
+      r.administered_by_name,
+      r.stock_before??'', r.stock_after??'',
+      (r.comment||'').replace(/,/g,';')
+    ].map(v=>'"'+String(v).replace(/"/g,"'")+'"').join(',');
+    csv+=row+'\n';
+  });
+  const now=new Date();
+  const fname=`audit-log-${me.home?.name||'home'}-${now.toLocaleDateString('en-GB').replace(/\//g,'-')}.csv`.replace(/\s/g,'-');
+  const a=document.createElement('a');
+  a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+  a.download=fname;a.click();
+  toast('Audit log exported','ok');
+}
+
+// ── MANAGER PASSWORD ──
+async function changeMgrPw(){
+  const cur=document.getElementById('mgr-pw-cur').value;
+  const nw=document.getElementById('mgr-pw-new').value;
+  const con=document.getElementById('mgr-pw-con').value;
+  if(cur!==me.manager.password){toast('Current password incorrect','err');return;}
+  if(nw.length<6){toast('New password too short','err');return;}
+  if(nw!==con){toast('Passwords do not match','err');return;}
+  const hashedNw=await hashPassword(nw);
+  await sb.from('managers').update({password:hashedNw,must_change_password:false}).eq('id',me.manager.id);
+  me.manager.password=nw;toast('Password updated','ok');
+}
+
+// ════════════════════════════════════════════════
+// EMPLOYEE VIEW
+// ════════════════════════════════════════════════
+async function initEmployee(){
+  const emp=me.employee;
+  document.getElementById('emp-title').textContent=me.home.name;
+  document.getElementById('emp-sub').textContent='Welcome, '+emp.first_name+' · '+new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+  await renderEmpResidents();
+}
+async function renderEmpResidents(){
+  const {data:res}=await sb.from('residents').select('*').eq('home_id',me.home.id).eq('is_active',true).order('first_name');
+  if(!res.length){document.getElementById('emp-res-grid').innerHTML='<div class="empty">No residents yet.</div>';return;}
+  document.getElementById('emp-res-grid').innerHTML=res.map(r=>resCard(r,'emp')).join('');
+}
+
+// ════════════════════════════════════════════════
+// NOTIFICATIONS
+// ════════════════════════════════════════════════
+async function loadNotifications(){
+  if(!me.home)return;
+  const {data:notifs}=await sb.from('notifications').select('*').eq('home_id',me.home.id).order('created_at',{ascending:false}).limit(50);
+  const unread=notifs.filter(n=>!n.is_read);
+  const cnt=document.getElementById('notif-count');
+  if(unread.length>0){cnt.style.display='flex';cnt.textContent=unread.length;}else{cnt.style.display='none';}
+  document.getElementById('notif-list').innerHTML=notifs.length?notifs.map(n=>`<div class="notif-item ${n.is_read?'':'unread'}" onclick="markRead('${n.id}')">
+    <div class="notif-title">${n.title}</div>
+    <div class="notif-msg">${n.message}</div>
+    <div class="notif-time">${new Date(n.created_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
+  </div>`).join(''):'<div class="empty" style="padding:20px">No notifications</div>';
+}
+function toggleNotif(){document.getElementById('notif-panel').classList.toggle('open');}
+document.addEventListener('click',e=>{if(!e.target.closest('#notif-btn')&&!e.target.closest('#notif-panel'))document.getElementById('notif-panel').classList.remove('open');});
+async function markRead(id){
+  await sb.from('notifications').update({is_read:true}).eq('id',id);
+  await loadNotifications();
+}
+async function markAllRead(){
+  if(!me.home)return;
+  await sb.from('notifications').update({is_read:true}).eq('home_id',me.home.id);
+  await loadNotifications();
+}
+async function createNotif(type,title,message,residentId,medicationId){
+  const hid=me.home?.id||me.manager?.home_id;
+  const cid=me.home?.company_id||me.manager?.company_id||me.employee?.company_id;
+  if(!hid)return;
+  await sb.from('notifications').insert({home_id:hid,company_id:cid,type,title,message,resident_id:residentId,medication_id:medicationId});
+  await loadNotifications();
+}
+
+// ════════════════════════════════════════════════
+// EMAIL (Resend)
+// ════════════════════════════════════════════════
+async function sendEmail(to,subject,text){
+  try{
+    await fetch('https://api.resend.com/emails',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+RESEND_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({from:'MedTrack Pro <onboarding@resend.dev>',to:[to],subject,text})
+    });
+  }catch(e){console.warn('Email send failed:',e);}
+}
+
+// ════════════════════════════════════════════════
+// PHOTO UPLOAD
+// ════════════════════════════════════════════════
+let photoFile=null;
+function handlePhoto(input){
+  const file=input.files[0];if(!file)return;
+  const canvas=document.createElement('canvas');
+  const img=new Image();
+  img.onload=()=>{
+    const MAX=300;
+    let w=img.width,h=img.height;
+    if(w>h){if(w>MAX){h=h*(MAX/w);w=MAX;}}else{if(h>MAX){w=w*(MAX/h);h=MAX;}}
+    canvas.width=w;canvas.height=h;
+    canvas.getContext('2d').drawImage(img,0,0,w,h);
+    canvas.toBlob(blob=>{
+      photoFile=new File([blob],file.name,{type:'image/jpeg'});
+      const url=URL.createObjectURL(blob);
+      document.getElementById('photo-preview').src=url;
+      document.getElementById('photo-preview').style.display='block';
+      document.getElementById('photo-placeholder').style.display='none';
+    },'image/jpeg',0.7);
+  };
+  img.src=URL.createObjectURL(file);
+}
+async function uploadPhoto(residentId){
+  if(!photoFile)return null;
+  const path=`${residentId}/${Date.now()}.jpg`;
+  const {data,error}=await sb.storage.from('resident-photos').upload(path,photoFile,{contentType:'image/jpeg',upsert:true});
+  if(error){console.warn('Photo upload failed:',error);return null;}
+  const {data:url}=sb.storage.from('resident-photos').getPublicUrl(path);
+  return url.publicUrl;
+}
+
+// ── SAVE RESIDENT ──
+function openAddResident(){
+  ['res-first','res-last','res-dob','res-room','res-diagnosis','res-allergies'].forEach(id=>document.getElementById(id).value='');
+  photoFile=null;
+  const prev=document.getElementById('photo-preview');
+  if(prev){prev.style.display='none';prev.src='';}
+  const ph=document.getElementById('photo-placeholder');
+  if(ph)ph.style.display='';
+  openModal('mo-resident');
+}
+async function saveResident(){
+  const first=document.getElementById('res-first').value.trim();
+  const last=document.getElementById('res-last').value.trim();
+  if(!first||!last){toast('First and last name required','err');return;}
+  const btn=document.getElementById('res-save-btn');btn.disabled=true;btn.textContent='Saving...';
+  const diagnosis=document.getElementById('res-diagnosis').value.trim();
+  const allergies=document.getElementById('res-allergies').value.trim();
+  const {data:res,error}=await sb.from('residents').insert({home_id:me.home.id,company_id:me.manager?.company_id||me.home?.company_id||'',first_name:first,last_name:last,date_of_birth:document.getElementById('res-dob').value||null,room_number:document.getElementById('res-room').value.trim(),diagnosis:diagnosis||null,allergies:allergies||null}).select().single();
+  if(error){toast('Error saving resident','err');btn.disabled=false;btn.textContent='Add resident';return;}
+  const photoUrl=await uploadPhoto(res.id);
+  if(photoUrl)await sb.from('residents').update({photo_url:photoUrl}).eq('id',res.id);
+  btn.disabled=false;btn.textContent='Add resident';
+  photoFile=null;
+  document.getElementById('photo-preview').style.display='none';
+  document.getElementById('photo-placeholder').style.display='';
+  closeModal('mo-resident');toast('Resident added','ok');renderMgrResidents();
+}
+
+// ════════════════════════════════════════════════
+// MISC
+// ════════════════════════════════════════════════
+// bookin listeners set in openBookIn()
+
+// ── REJECT SHIFT (manager approvals) ──
+let rejectingShiftId=null;
+function openRej(id){rejectingShiftId=id;document.getElementById('rej-rsn').value='';openModal('mo-rej');}
+async function doReject(){
+  const rsn=document.getElementById('rej-rsn').value.trim();
+  const {error}=await sb.from('shifts').update({status:'rejected',reject_reason:rsn}).eq('id',rejectingShiftId);
+  if(error){toast('Error: '+error.message,'err');return;}
+  toast('Shift rejected','ok');closeModal('mo-rej');
+  await renderAppr();await renderMMetrics();
+}
+
+// ── VIEW EMPLOYEE CREDENTIALS ──
+function showPin(id){
+  const e=emps.find(x=>x.id===id);if(!e)return;
+  document.getElementById('pin-mname').textContent=e.first_name+' '+e.last_name;
+  document.getElementById('pin-mval').textContent='User ID: '+e.user_id;
+  openModal('mo-pin');
+}
+
+</script>
+</body>
+</html>
