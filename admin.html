@@ -32,14 +32,25 @@ input:focus{outline:none;border-color:#4a4845}
   <input type="password" id="pw" placeholder="Enter system password" onkeydown="if(event.key==='Enter')login()">
   <button class="btn" id="btn" onclick="login()"><span id="btn-txt">Access system</span></button>
   <div class="err" id="err"></div>
-  <a class="back" onclick="window.location.href='index.html'">← Back to main login</a>
+  <a class="back" onclick="window.location.href='./app2.html'">← Back to main login</a>
 </div>
 <script>
 const SB_URL='https://ugomcdfwzbrqtgbuhokh.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVnb21jZGZ3emJycXRnYnVob2toIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNjEyMTQsImV4cCI6MjA5MjczNzIxNH0.d1RU2TE6EbykiTkJmKD2EdUu5AFx0Y_0Rwvw68yA-bY';
 const STORED_PW_KEY='mt_super_pw';
 
-function login(){
+async function hashPw(password){
+  const msgBuffer=new TextEncoder().encode(password);
+  const hashBuffer=await crypto.subtle.digest('SHA-256',msgBuffer);
+  const hashArray=Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+async function verifyPw(input,stored){
+  if(!stored)return false;
+  if(stored.length===64){const h=await hashPw(input);return h===stored;}
+  return input===stored;
+}
+async function login(){
   const pw=document.getElementById('pw').value;
   const btn=document.getElementById('btn');
   const err=document.getElementById('err');
@@ -48,8 +59,9 @@ function login(){
   const stored=localStorage.getItem(STORED_PW_KEY)||'MedTrack2024!';
   btn.disabled=true;
   document.getElementById('btn-txt').innerHTML='<span class="spin"></span>';
+  const matched=await verifyPw(pw,stored);
   setTimeout(()=>{
-    if(pw===stored){
+    if(matched){
       // Store session flag and redirect to main app in super admin mode
       localStorage.setItem('mt_super_session','1');
       window.location.href='index.html?mode=super';
@@ -59,7 +71,7 @@ function login(){
       btn.disabled=false;
       document.getElementById('btn-txt').textContent='Access system';
     }
-  },600);
+  },matched?0:600);
 }
 </script>
 </body>
