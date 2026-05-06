@@ -2,7 +2,7 @@
   "name": "MedTrack Pro",
   "short_name": "MedTrack",
   "description": "Medication Administration & Stock Management System",
-  "start_url": "./app2.html",
+  "start_url": "./app3.html",
   "display": "standalone",
   "background_color": "#f5f4f0",
   "theme_color": "#1a1917",
